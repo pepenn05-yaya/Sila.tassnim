@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="ar"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html{color-scheme:dark}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>حروفي الملونة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Cairo:wght@500;700;900&family=Lalezar&display=swap">
+<style>
+/* Layout: TV-first. Menu = 5x2 grid of big colour cards. Lesson = tile grid + big "stage" panel. Quiz = 2x2 answer buttons. Remote (D-pad) navigation. One deliberate dark look. */
+:root{
+  --bg:#1b1745; --bg2:#2b2569; --ink:#fff6e0; --mute:#c4bff0;
+  --coral:#ff6a55; --sun:#ffc531; --mint:#27d6a0; --sky:#35a7ff; --grape:#a96cff;
+  --pink:#ff6eb4; --lime:#9be03a; --orange:#ff9731; --teal:#19c6d1;
+  --dark:#1b1745; --cons:#e0432f; --vow:#1f7fe0; --good:#1fc97f; --bad:#ff5252;
+  --f-display:'Lalezar','Cairo',system-ui,sans-serif;
+  --f-body:'Cairo','Andika',system-ui,sans-serif;
+  --f-latin:'Andika','Cairo',system-ui,sans-serif;
+  color-scheme:dark;
+}
+html{font-size:16px;font-size:clamp(14px,1.75vw,42px)}
+body{margin:0;background-color:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:1.4;
+  background-image:radial-gradient(circle at 8% 12%,rgba(255,197,49,.16) 0 9rem,transparent 9.1rem),radial-gradient(circle at 92% 20%,rgba(255,110,180,.14) 0 11rem,transparent 11.1rem),radial-gradient(circle at 80% 92%,rgba(39,214,160,.13) 0 10rem,transparent 10.1rem),radial-gradient(circle at 10% 88%,rgba(53,167,255,.14) 0 8rem,transparent 8.1rem);
+  background-attachment:fixed}
+#root{padding-block:1rem 1.5rem;padding-left:max(16px,3.5vw,env(safe-area-inset-left,0px));padding-right:max(16px,3.5vw,env(safe-area-inset-right,0px));min-height:100vh;box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:focus{outline:.3rem solid #fff;outline-offset:.25rem;box-shadow:0 0 0 .6rem rgba(255,255,255,.28);position:relative;z-index:2}
+.card:focus,.tile:focus,.opt:focus{transform:scale(1.06)}
+@media (prefers-reduced-motion:no-preference){.card,.tile,.opt{transition:transform .12s}}
+
+.c-coral{--tc:var(--coral)}.c-sun{--tc:var(--sun)}.c-mint{--tc:var(--mint)}.c-sky{--tc:var(--sky)}.c-grape{--tc:var(--grape)}
+.c-pink{--tc:var(--pink)}.c-lime{--tc:var(--lime)}.c-orange{--tc:var(--orange)}.c-teal{--tc:var(--teal)}.c-ink{--tc:var(--ink)}
+
+/* header */
+.top{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;column-gap:1rem;margin-bottom:1rem}
+h1{font-family:var(--f-display);font-weight:400;font-size:2.3rem;line-height:1.15;margin:0}
+.sub{margin:0;color:var(--mute);font-size:1.05rem}
+.btn{background:var(--bg2);border:.15rem solid rgba(255,255,255,.18);border-radius:1rem;padding:.45rem 1.1rem;min-height:2.7rem;font-weight:700;font-size:1.1rem;display:inline-flex;align-items:center;justify-content:center}
+.btn svg{width:1.3rem;height:1.3rem;margin-inline-end:.4rem;fill:currentColor}
+.btn.ico svg{margin:0}
+#root[dir=rtl] .back svg{transform:scaleX(-1)}
+.tabs{display:grid;grid-auto-flow:column;column-gap:.6rem}
+.tab{background:transparent;border:.15rem solid var(--mute);border-radius:1rem;padding:.4rem 1.2rem;min-height:2.7rem;font-weight:900;font-size:1.15rem;color:var(--ink)}
+.tab.on{background:var(--ink);color:var(--dark);border-color:var(--ink)}
+
+/* menu cards */
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1rem}
+.cards.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:9.5rem;padding:.8rem .5rem;border:0;border-radius:1.5rem;background:var(--tc);color:var(--dark)}
+.card .big{font-family:var(--f-body);font-weight:900;font-size:3.3rem;line-height:1.5;margin-bottom:.5rem}
+.card .big.lat{font-family:var(--f-latin);font-weight:700;font-size:3rem;line-height:1.5}
+.card .big.sm{font-size:2.3rem}
+.card .big svg{width:3.4rem;height:3.4rem;fill:var(--orange)}
+.card .lbl{font-family:var(--f-display);font-size:1.45rem;line-height:1.2;text-align:center}
+
+/* lesson */
+.rule{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:1rem;background:var(--bg2);border-radius:1.2rem;padding:.6rem 1.2rem .6rem .6rem;margin-bottom:1rem;font-size:1.2rem;font-weight:700}
+#root[dir=rtl] .rule{padding:.6rem .6rem .6rem 1.2rem}
+.mk{display:flex;align-items:center;justify-content:center;min-width:3.4rem;height:3.4rem;padding:0 .4rem;border-radius:1rem;background:var(--tc);color:var(--dark);font-size:2.2rem;font-weight:900;line-height:1.7}
+.mk.lat{font-family:var(--f-latin);font-size:1.7rem}
+.learn{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);column-gap:1.2rem;align-items:start}
+.tiles{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.6rem}
+.tile{border:.2rem solid transparent;border-radius:1.1rem;background:var(--tc);color:var(--dark);min-height:3.9rem;padding:.1rem .2rem;font-family:var(--f-body);font-weight:900;font-size:2.1rem;line-height:1.7}
+.tiles.fr .tile{font-family:var(--f-latin);font-weight:700;font-size:1.5rem;line-height:1.9;padding:.1rem 0}
+.tiles.wide .tile{font-size:1.7rem}
+.tile.sel{border-color:#fff;box-shadow:0 0 0 .25rem rgba(255,255,255,.35)}
+.stage{background:var(--bg2);border-radius:1.8rem;padding:1rem;text-align:center;position:sticky;top:.5rem}
+.glyph{border-radius:1.5rem;background:var(--tc);color:var(--dark);font-family:var(--f-body);font-weight:900;font-size:5.6rem;line-height:1.7;min-height:9rem;display:flex;align-items:center;justify-content:center;direction:rtl}
+.glyph.fr{background:var(--ink);font-family:var(--f-latin);font-weight:700;font-size:5.4rem;line-height:1.5;direction:ltr}
+.cn{color:var(--cons)}.vw{color:var(--vow)}
+.read{font-family:var(--f-latin);font-size:1.9rem;font-weight:700;margin-top:.4rem;min-height:2.4rem;direction:ltr}
+.sname{font-size:1.4rem;font-weight:700;color:var(--mute);min-height:2rem}
+.acts{display:grid;grid-auto-flow:column;column-gap:.8rem;justify-content:center;margin-top:.6rem}
+.note{color:var(--sun);font-size:.95rem;margin-top:.6rem;min-height:1.3rem}
+
+/* quiz */
+.qwrap{max-width:62rem;margin:0 auto}
+.qmeta{display:grid;grid-template-columns:auto 1fr;column-gap:1rem;align-items:center;margin-bottom:.8rem;color:var(--mute);font-weight:700}
+.pips{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;column-gap:.4rem}
+.pip{height:.7rem;border-radius:1rem;background:var(--bg2)}
+.pip.cur{background:var(--ink)}.pip.y{background:var(--good)}.pip.n{background:var(--bad)}
+.qtext{font-family:var(--f-display);font-size:2rem;text-align:center;line-height:1.3}
+.qbig{font-family:var(--f-latin);font-size:4.4rem;font-weight:700;text-align:center;line-height:1.4;margin:0}
+.qbig.ar{font-family:var(--f-body);font-weight:900;direction:rtl;font-size:4.8rem;line-height:1.6}
+.qsaywrap{text-align:center;margin:.3rem 0}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:.5rem}
+.opt{border:.2rem solid transparent;border-radius:1.5rem;min-height:4.3rem;padding:.1rem .6rem;color:var(--dark);font-family:var(--f-display);font-size:1.8rem;line-height:1.4;position:relative}
+.opt.ar{font-family:var(--f-body);font-weight:900;font-size:2.8rem;line-height:1.6;direction:rtl}
+.opt.lat{font-family:var(--f-latin);font-weight:700;font-size:2.5rem}
+.o0{background:var(--coral)}.o1{background:var(--sky)}.o2{background:var(--sun)}.o3{background:var(--mint)}
+.opt.ok{background:var(--good);border-color:#fff}
+.opt.ok::after{content:"\2713";position:absolute;top:.2rem;inset-inline-end:.7rem;font-size:1.6rem;font-family:sans-serif}
+.opt.bad{background:var(--bad);border-color:#fff}
+.opt.bad::after{content:"\2717";position:absolute;top:.2rem;inset-inline-end:.7rem;font-size:1.6rem;font-family:sans-serif}
+.fb{min-height:2rem;margin-top:.5rem;text-align:center;font-size:1.5rem;font-weight:900}
+
+/* result */
+.res{max-width:52rem;margin:0 auto;text-align:center}
+.stars{display:grid;grid-auto-flow:column;column-gap:.4rem;justify-content:center;margin:.5rem 0}
+.stars svg{width:4.4rem;height:4.4rem}
+.score{font-family:var(--f-display);font-size:3.2rem;line-height:1.2}
+.msg{font-size:1.5rem;font-weight:700;margin:.3rem 0 1rem}
+.weak{display:grid;grid-template-columns:repeat(auto-fill,minmax(5.5rem,1fr));gap:.5rem;margin:.6rem 0 1.2rem}
+.weak span{background:var(--bg2);border-radius:.9rem;padding:.1rem;font-family:var(--f-body);font-weight:900;font-size:2rem;line-height:1.7}
+.weak.lat span{font-family:var(--f-latin);font-weight:700}
+.row{display:grid;grid-auto-flow:column;column-gap:1rem;justify-content:center}
+.big-btn{border:0;border-radius:1.2rem;background:var(--sun);color:var(--dark);font-family:var(--f-display);font-size:1.7rem;padding:.4rem 1.6rem;min-height:3.4rem}
+.big-btn.alt{background:var(--bg2);color:var(--ink);border:.15rem solid rgba(255,255,255,.25)}
+
+@media (max-width:900px){
+  .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cards.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .learn{grid-template-columns:minmax(0,1fr)}
+  .stage{position:static;order:-1;margin-bottom:1rem}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .top{grid-template-columns:auto 1fr auto}
+  .top .tabs{grid-column:1 / -1;grid-row:2;margin-top:.6rem}
+  .qbig,.qbig.ar{font-size:4.5rem}
+}
+
+/* ---- book pages ---- */
+.cards.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cards.tall .card{min-height:15rem}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);column-gap:1.2rem;row-gap:1rem;align-items:start}
+.panel{background:var(--bg2);border-radius:1.6rem;padding:1rem}
+.ptitle{font-family:var(--f-display);font-weight:400;font-size:1.5rem;margin:0 0 .6rem;text-align:center}
+.panel .glyph{font-size:4.8rem;min-height:7rem}
+.kw{font-size:2rem;font-weight:700;margin:.2rem 0;text-align:center;font-family:var(--f-body)}
+.kw .e{font-family:sans-serif}
+.hl{color:var(--coral)}
+.forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(4.6rem,1fr));gap:.5rem;margin-top:.6rem}
+.form{background:var(--ink);color:var(--dark);border-radius:1rem;text-align:center;padding:.1rem .2rem}
+.form b{display:block;font-family:var(--f-body);font-size:2.2rem;line-height:1.6;font-weight:900}
+.form small{display:block;font-size:.8rem;color:#554f8c;margin-bottom:.2rem}
+.ccards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
+.ccard{min-height:5.2rem;font-family:var(--f-body);font-weight:900;font-size:3rem;line-height:1.5;background:var(--bg);color:var(--ink);border:.2rem dashed var(--mute);border-radius:1.1rem}
+.ccard.on{background:var(--tc);color:var(--dark);border:.2rem solid #fff}
+.ccard.on::after{content:"\2713";font-family:sans-serif;font-size:1.1rem;margin-inline-start:.3rem}
+@keyframes shake{25%{transform:translateX(-.4rem)}75%{transform:translateX(.4rem)}}
+.shake{animation:shake .3s}
+.marks{display:grid;grid-auto-flow:column;gap:.6rem;justify-content:center;margin-top:.8rem}
+.mbtn{background:var(--tc);color:var(--dark);border:.2rem solid transparent;border-radius:1.2rem;min-width:5.2rem;min-height:3.8rem;padding:0 .8rem;font-family:var(--f-body);font-weight:900;font-size:2.2rem}
+.mbtn.sel{border-color:#fff}
+.eq{display:flex;justify-content:center;align-items:center;font-family:var(--f-body);font-weight:900;font-size:2.2rem;margin-top:.4rem;min-height:3.2rem}
+.eq span{padding:0 .5rem}
+.tiles.t3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tiles.t4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tile.syl{font-size:2.3rem}
+.tile.word{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:6.2rem;font-size:1.9rem;line-height:1.3}
+.tile.word .we,.lcard .we{font-family:sans-serif;font-size:2.2rem;line-height:1.3}
+.lex{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.7rem}
+.lcard{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:7.2rem;border:0;border-radius:1.2rem;background:var(--tc);color:var(--dark);padding:.3rem}
+.lcard .we{font-size:3rem}
+.lcard .ww{font-family:var(--f-body);font-weight:900;font-size:1.4rem}
+.opt.emo{font-family:sans-serif;font-size:3rem;line-height:1.5}
+.qbig.emo{font-family:sans-serif;font-size:4.6rem}
+.opt.wd{font-family:var(--f-body);font-weight:900;font-size:2.2rem}
+.qbig.wdbig{font-family:var(--f-body);font-weight:900;direction:rtl;font-size:4rem;line-height:1.6}
+@media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}.lex{grid-template-columns:repeat(3,minmax(0,1fr))}.cards.c3{grid-template-columns:repeat(2,minmax(0,1fr))}.cards.tall .card{min-height:9.5rem}}
+
+/* ---- livre français ---- */
+.lcard.lat .ww{font-family:var(--f-latin);font-weight:700;font-size:1.2rem;line-height:1.25;text-align:center}
+.lcard.sel{outline:.3rem solid #fff}
+.opt.fw{font-family:var(--f-latin);font-weight:700;font-size:1.9rem;line-height:1.3;direction:ltr}
+.qbig.fwbig{font-family:var(--f-latin);font-weight:700;font-size:3.6rem;line-height:1.4}
+.tiles.t2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tile.lat{font-family:var(--f-latin);font-weight:700;font-size:1.5rem;line-height:1.3;padding:.5rem .6rem;min-height:3.6rem}
+.arx{font-family:var(--f-body);direction:rtl;text-align:right;color:var(--sun);font-size:1.3rem;font-weight:700;margin-bottom:.8rem;line-height:1.6}
+.rl{font-family:var(--f-latin);font-size:1.35rem;line-height:1.5;margin:.4rem 0;padding-inline-start:1.1rem;position:relative}
+.rl::before{content:'';position:absolute;inset-inline-start:0;top:.7em;width:.5rem;height:.5rem;border-radius:50%;background:var(--sun)}
+.pcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
+.pcard{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:6.4rem;padding:.4rem .8rem;border:.2rem solid transparent;border-radius:1.2rem;background:var(--tc);color:var(--dark);text-align:center}
+.pcard:focus{transform:scale(1.04)}
+.pf{font-family:var(--f-latin);font-weight:700;font-size:1.4rem;line-height:1.3}
+.pa{font-family:var(--f-body);font-weight:700;font-size:1.1rem;direction:rtl;margin-top:.2rem;opacity:.85}
+.opt.aw{font-family:var(--f-body);font-weight:700;font-size:1.6rem;line-height:1.4;direction:rtl}
+.qbig.fwmid{font-family:var(--f-latin);font-weight:700;font-size:2.6rem;line-height:1.3}
+.qbig.awbig{font-family:var(--f-body);font-weight:700;direction:rtl;font-size:2.6rem;line-height:1.5}
+@media (max-width:900px){.pcards{grid-template-columns:repeat(1,minmax(0,1fr))}.tiles.t2{grid-template-columns:repeat(1,minmax(0,1fr))}}
+.weak.lat{grid-template-columns:repeat(auto-fill,minmax(10rem,1fr))}
+.weak.lat span{font-size:1.3rem;line-height:1.4;padding:.3rem}
+.mgrp{display:inline-block;font-size:1em;line-height:1.25;letter-spacing:.05em;max-width:100%;word-break:break-all}
+.mzero{font-size:1em;opacity:.6}
+.msc{display:inline-flex;align-items:center;gap:.3rem;font-size:3.2rem;direction:ltr}
+.msc.col{flex-direction:column;gap:0}
+.mbox{display:inline-flex;width:4.6rem;height:3.4rem;border:.25rem solid currentColor;border-radius:.6rem;align-items:center;justify-content:center;font-size:2.6rem}
+.mpair{display:flex;align-items:center;justify-content:center;gap:1.2rem;font-size:2.6rem}
+.mpair .mgrp{max-width:14rem}
+.mvs{font-size:3rem;opacity:.5;margin:0 .6rem}
+.qbig.emo .mgrp{font-size:3rem}
+.opt.mo .mgrp,.opt .mgrp{font-size:2rem}
+.opt.sm{font-size:1.4rem}
+.msvg{width:100%;max-width:22rem;height:auto;max-height:15rem;direction:ltr}
+.gc{fill:#fff;fill-opacity:.12;stroke:#fff;stroke-opacity:.7;stroke-width:2}
+.gc.hl{fill:#ffc531;fill-opacity:.9}
+.gl{stroke:#fff;stroke-opacity:.6;stroke-width:2}
+.gn{fill:#fff;fill-opacity:.8}
+.gn.hl{fill:#ffc531}
+.ge{font-size:30px}
+.mt1s{fill:#fff;font-size:20px;font-weight:700;font-family:sans-serif}
+.mtile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;font-size:2.4rem;line-height:1.3;padding:.4rem}
+.mtile small{font-size:1.15rem;font-family:var(--f-body);font-weight:700}
+.mtile .msvg{max-height:10rem}
+.mtile .mgrp{font-size:1.7rem}
+.mobj{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;align-items:center;margin-top:1.2rem;font-size:1.1rem}
+.mobj span{background:var(--bg2);border-radius:1rem;padding:.2rem .8rem}
+.mtile .mgrp{font-size:1.25rem;line-height:1.3;letter-spacing:0}
+.mtile{min-height:0;font-size:1.8rem}
+.tiles.mtiles{gap:.5rem}
+.qbig .msvg{height:11rem;width:auto;max-width:100%;max-height:none}
+.mtile .msvg{height:6.5rem;width:auto}
+.tiles.mtiles{grid-auto-rows:min-content}
+.mgrp{word-break:normal;white-space:nowrap}
+.mtile .mgrp{font-size:1.15rem}
+.mtile .mgrp{font-size:.8rem;line-height:1.35;max-width:100%}
+.mtile{overflow:hidden}
+.qbig .msvg{height:8.5rem}
+.mtile .msvg{height:4.6rem}
+.mtile .msc{font-size:2rem}.mtile .mbox{width:3rem;height:2.2rem;font-size:1.6rem}
+</style>
+
+<div id="root" dir="rtl" lang="ar"><div id="app"></div></div>
+<noscript>يحتاج هذا الموقع إلى تفعيل جافاسكربت.</noscript>
+
+<script>
+(function(){
+"use strict";
+var root=document.getElementById('root'),app=document.getElementById('app');
+function $(s){return app.querySelector(s)}
+function all(s){return [].slice.call(app.querySelectorAll(s))}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function sample(a,n){return shuffle(a).slice(0,n)}
+
+/* ---------- sound ---------- */
+var SND={on:true,ok:!!(window.speechSynthesis&&window.SpeechSynthesisUtterance)};
+try{if(localStorage.getItem('huroofi-mute')==='1')SND.on=false}catch(e){}
+function voices(){try{return speechSynthesis.getVoices()||[]}catch(e){return []}}
+function findVoice(lang){var p=lang.slice(0,2),vs=voices();for(var i=0;i<vs.length;i++){if(String(vs[i].lang).toLowerCase().replace('_','-').indexOf(p)===0)return vs[i]}return null}
+function hasVoice(lang){return SND.ok&&SND.on&&!!findVoice(lang)}
+function say(t,lang){if(!SND.on||!SND.ok||!t)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang=lang;u.rate=.7;var v=findVoice(lang);if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+var AC=null;
+function tone(f,d,type,t0){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+(t0||0);o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+function ding(){if(!SND.on)return;tone(660,.18,'sine',0);tone(880,.22,'sine',.14);tone(1175,.3,'sine',.3)}
+function buzz(){if(!SND.on)return;tone(200,.3,'square',0)}
+function voiceNote(lang){
+  if(!SND.ok)return lang==='fr-FR'?'Le son n’est pas disponible dans ce navigateur.':'الصوت غير متوفر في هذا المتصفح.';
+  if(!SND.on)return '';
+  if(voices().length&&!findVoice(lang))return lang==='fr-FR'?'Aucune voix française installée sur cet appareil.':'لا يوجد صوت عربي مثبّت على هذا الجهاز. ثبّته من إعدادات تحويل النص إلى كلام.';
+  return '';
+}
+
+/* ---------- arabic data ---------- */
+var LETTERS=[
+ {g:'أ',n:'ألف',r:'',alif:1},{g:'ب',n:'باء',r:'b'},{g:'ت',n:'تاء',r:'t'},{g:'ث',n:'ثاء',r:'th'},{g:'ج',n:'جيم',r:'j'},
+ {g:'ح',n:'حاء',r:'ḥ'},{g:'خ',n:'خاء',r:'kh'},{g:'د',n:'دال',r:'d'},{g:'ذ',n:'ذال',r:'dh'},{g:'ر',n:'راء',r:'r'},
+ {g:'ز',n:'زاي',r:'z'},{g:'س',n:'سين',r:'s'},{g:'ش',n:'شين',r:'sh'},{g:'ص',n:'صاد',r:'ṣ'},{g:'ض',n:'ضاد',r:'ḍ'},
+ {g:'ط',n:'طاء',r:'ṭ'},{g:'ظ',n:'ظاء',r:'ẓ'},{g:'ع',n:'عين',r:'ʿ'},{g:'غ',n:'غين',r:'gh'},{g:'ف',n:'فاء',r:'f'},
+ {g:'ق',n:'قاف',r:'q'},{g:'ك',n:'كاف',r:'k'},{g:'ل',n:'لام',r:'l'},{g:'م',n:'ميم',r:'m'},{g:'ن',n:'نون',r:'n'},
+ {g:'ه',n:'هاء',r:'h'},{g:'و',n:'واو',r:'w'},{g:'ي',n:'ياء',r:'y'}
+];
+var MARKS=[
+ {id:'fatha',color:'coral',name:'الفتحة',m:'َ',v:'a',rule:'الفتحة خط صغير فوق الحرف. نفتح فمنا ونقول: بَ ← با'},
+ {id:'kasra',color:'sky',name:'الكسرة',m:'ِ',v:'i',rule:'الكسرة خط صغير تحت الحرف. نقول: بِ ← بي'},
+ {id:'damma',color:'mint',name:'الضمة',m:'ُ',v:'u',rule:'الضمة تشبه واوًا صغيرة فوق الحرف. نضمّ شفتينا ونقول: بُ ← بو'},
+ {id:'sukun',color:'grape',name:'السكون',m:'ْ',v:'',rule:'السكون دائرة صغيرة فوق الحرف. نقرأ الحرف بلا حركة: أَبْ'},
+ {id:'shadda',color:'pink',name:'الشدّة',m:'ّ',v:'',rule:'الشدّة علامة صغيرة فوق الحرف. الحرف المشدّد يُقرأ مرتين: بَّ = بْ + بَ'},
+ {id:'tfath',color:'orange',name:'تنوين الفتح',m:'ً',v:'an',rule:'تنوين الفتح فتحتان فوق الحرف. نقول: بً ← بَن'},
+ {id:'tkasr',color:'lime',name:'تنوين الكسر',m:'ٍ',v:'in',rule:'تنوين الكسر كسرتان تحت الحرف. نقول: بٍ ← بِن'},
+ {id:'tdamm',color:'teal',name:'تنوين الضم',m:'ٌ',v:'un',rule:'تنوين الضم ضمتان فوق الحرف. نقول: بٌ ← بُن'}
+];
+var CONFLICT={fatha:['shadda','sukun','tfath'],shadda:['fatha'],sukun:['fatha'],tfath:['fatha'],kasra:['tkasr'],tkasr:['kasra'],damma:['tdamm'],tdamm:['damma']};
+function markById(id){for(var i=0;i<MARKS.length;i++)if(MARKS[i].id===id)return MARKS[i];return null}
+function valid(L,M){return !(L.alif&&(M.id==='sukun'||M.id==='shadda'))}
+function conf(a,b){return (CONFLICT[a.id]||[]).indexOf(b.id)>=0}
+function syl(L,M){
+  if(M.id==='sukun')return 'أَ'+L.g+'ْ';
+  var g=L.g;
+  if(L.alif&&(M.id==='kasra'||M.id==='tkasr'))g='إ';
+  if(M.id==='shadda')return g+'َّ';
+  return g+M.m;
+}
+function rd(L,M){
+  if(M.id==='sukun')return 'a'+L.r;
+  if(M.id==='shadda')return L.r+L.r+'a';
+  return L.r+M.v;
+}
+var BA=LETTERS[1];
+
+/* ---------- french data ---------- */
+var FV=['a','e','i','o','u','ou','on','an'];
+var FVCOL={a:'coral',e:'sky',i:'mint',o:'grape',u:'pink',ou:'orange',on:'lime',an:'teal'};
+var FC=['b','c','d','f','g','j','l','m','n','p','r','s','t','v','z','ch'];
+var CONF={b:['d','p'],d:['b','t'],p:['b','q'],m:['n'],n:['m'],v:['f'],f:['v'],t:['d'],s:['z'],z:['s'],j:['g'],g:['j'],c:['s'],l:['r'],r:['l']};
+var FLN=['a','bé','cé','dé','e','effe','gé','hache','i','ji','ka','elle','emme','enne','o','pé','cu','erre','esse','té','u','vé','double vé','iks','i grec','zède'];
+var FL=FLN.map(function(n,i){var c=String.fromCharCode(65+i);return {u:c,l:c.toLowerCase(),n:n}});
+
+/* ---------- state ---------- */
+var LANG='ar',SEC=null,sel=0,Q=null,qTimer=null,autoT=null,autoOn=false,LAST=null;
+function cur(){var h=(location.hash||'').replace('#','');return validHash(h)?h:'home'}
+function go(h){LAST=cur();if(cur()===h&&(location.hash||'').replace('#','')===h)render();else location.hash=h}
+
+/* ---------- icons ---------- */
+var I_BACK='<svg viewBox="0 0 24 24"><path d="M15.4 4.6 8 12l7.4 7.4 1.8-1.8L11.6 12l5.6-5.6z"/></svg>';
+var I_ON='<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+var I_OFF='<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>';
+var I_STAR='<svg viewBox="0 0 24 24"><path d="M12 2l3 6.6 7.2.8-5.4 4.8 1.6 7.1L12 17.8 5.6 21.3l1.6-7.1L1.8 9.4l7.2-.8z"/></svg>';
+function starSvg(on){return '<svg viewBox="0 0 24 24"><path fill="'+(on?'#ffc531':'#3a3380')+'" d="M12 2l3 6.6 7.2.8-5.4 4.8 1.6 7.1L12 17.8 5.6 21.3l1.6-7.1L1.8 9.4l7.2-.8z"/></svg>'}
+
+/* ---------- shared UI ---------- */
+function T(ar,fr){return LANG==='fr'?fr:ar}
+function head(o){
+  return '<header class="top">'+
+    (o.back?'<button class="btn back" data-act="back">'+I_BACK+'<span>'+T('رجوع','Retour')+'</span></button>':'<span></span>')+
+    '<div><h1>'+o.title+'</h1>'+(o.sub?'<p class="sub">'+o.sub+'</p>':'')+'</div>'+
+    (o.tabs?'<div class="tabs"><button class="tab'+(LANG==='ar'?' on':'')+'" data-go="ar">العربية</button><button class="tab'+(LANG==='fr'?' on':'')+'" data-go="fr">Français</button></div>':'<span></span>')+
+    '<button class="btn ico" data-act="snd" aria-label="'+T('الصوت','Son')+'">'+(SND.on?I_ON:I_OFF)+'</button>'+
+  '</header>';
+}
+function card(h,color,big,lbl,cls){return '<button class="card c-'+color+'" data-go="'+h+'"><span class="big '+(cls||'')+'">'+big+'</span><span class="lbl">'+lbl+'</span></button>'}
+function focusEl(sel){var el=sel?app.querySelector(sel):(LAST?app.querySelector('[data-go="'+LAST+'"]'):null);if(!el)el=app.querySelector('button.card,button.tile,button.opt,button.big-btn')||app.querySelector('button');if(el){try{el.focus()}catch(e){}}}
+
+/* ---------- menus ---------- */
+function menu(){
+  var out=[];
+  if(LANG==='ar'){
+    out.push(card('ar-letters','sun','أ ب ت','الحروف','sm'));
+    MARKS.forEach(function(M){out.push(card('ar-'+M.id,M.color,syl(BA,M),M.name))});
+    out.push(card('ar-quiz','ink',I_STAR,'اختبار'));
+    app.innerHTML=head({title:'الحروف مع الحركات',sub:'اختر درسًا وابدأ التعلّم',tabs:1,back:1})+'<div class="cards">'+out.join('')+'</div>';
+  }else{
+    out.push(card('fr-letters','sun','Aa','Les lettres','lat'));
+    FV.forEach(function(v){out.push(card('fr-'+v,FVCOL[v],'b'+v,'Syllabes en « '+v+' »','lat'))});
+    out.push(card('fr-quiz','ink',I_STAR,'Quiz'));
+    app.innerHTML=head({title:'Mes lettres en couleurs',sub:'Choisis une page et commence',tabs:1,back:1})+'<div class="cards">'+out.join('')+'</div>';
+  }
+  focusEl(LAST&&LAST.indexOf(LANG+'-')===0?'[data-go="'+LAST+'"]':null);
+}
+
+/* ---------- lessons ---------- */
+function section(h){
+  var p=h.split('-'),lang=p[0],id=p[1];
+  if(lang==='ar'){
+    if(id==='letters')return {lang:'ar',vlang:'ar-SA',color:'sun',title:'الحروف الهجائية',rule:'اضغط على أي حرف لتسمع اسمه',mk:'أ',mkcls:'',tcls:'',
+      items:LETTERS.map(function(L){return {tile:L.g,sg:L.g,read:L.r?L.r:'',name:L.n,say:L.n}})};
+    var M=markById(id);if(!M)return null;
+    var pool=LETTERS.filter(function(L){return valid(L,M)});
+    return {lang:'ar',vlang:'ar-SA',color:M.color,title:M.name,rule:M.rule,mk:'ـ'+M.m,mkcls:'',tcls:M.id==='sukun'?'wide':'',
+      items:pool.map(function(L){var g=syl(L,M);return {tile:g,sg:g,read:rd(L,M),name:'الحرف: '+L.n,say:g}})};
+  }
+  if(id==='letters')return {lang:'fr',vlang:'fr-FR',color:'sun',title:'Les lettres',rule:'Appuie sur une lettre pour entendre son nom.',mk:'Aa',mkcls:'lat',tcls:'fr',
+    items:FL.map(function(x){return {tile:x.u+x.l,sg:'<span class="cn">'+x.u+'</span><span class="vw">'+x.l+'</span>',read:'',name:'On dit « '+x.n+' »',say:x.n}})};
+  if(FV.indexOf(id)<0)return null;
+  return {lang:'fr',vlang:'fr-FR',color:FVCOL[id],title:'Syllabes en « '+id+' »',rule:'Consonne + voyelle « '+id+' » : b + '+id+' = b'+id,mk:id,mkcls:'lat',tcls:'fr',
+    items:FC.map(function(c){return {tile:c+id,sg:'<span class="cn">'+c+'</span><span class="vw">'+id+'</span>',read:c+' + '+id+' = '+c+id,name:'',say:c+id}})};
+}
+function learn(h){
+  var S=section(h);if(!S){go(LANG);return}
+  SEC=S;sel=0;
+  var tiles=S.items.map(function(it,i){return '<button class="tile c-'+S.color+'" data-act="tile" data-i="'+i+'">'+it.tile+'</button>'}).join('');
+  app.innerHTML=head({title:S.title,back:1})+
+   '<div class="rule c-'+S.color+'"><span class="mk '+S.mkcls+'">'+S.mk+'</span><span>'+S.rule+'</span></div>'+
+   '<div class="learn"><div class="tiles '+S.tcls+'">'+tiles+'</div>'+
+   '<aside class="stage c-'+S.color+'"><div class="glyph '+(S.lang==='fr'?'fr':'')+'" id="sg"></div><div class="read" id="sr"></div><div class="sname" id="sn"></div>'+
+   '<div class="acts"><button class="btn" data-act="say">'+I_ON+'<span>'+T('استمع','Écouter')+'</span></button><button class="btn" data-act="auto" id="autobtn">'+T('تشغيل الكل','Tout lire')+'</button></div>'+
+   '<div class="note" id="note"></div></aside></div>';
+  select(0,false);
+  focusEl('.tile');
+}
+function select(i,speak){
+  if(!SEC)return;
+  sel=i;var it=SEC.items[i];if(!it)return;
+  all('.tile').forEach(function(t){t.classList.toggle('sel',+t.getAttribute('data-i')===i)});
+  $('#sg').innerHTML=it.sg;$('#sr').textContent=it.read||'';$('#sn').textContent=it.name||'';
+  $('#note').textContent=voiceNote(SEC.vlang);
+  if(speak)say(it.say,SEC.vlang);
+}
+function stopAuto(){autoOn=false;clearTimeout(autoT);var b=document.getElementById('autobtn');if(b)b.textContent=T('تشغيل الكل','Tout lire')}
+function runAuto(i){
+  if(!autoOn||!SEC)return;
+  if(i>=SEC.items.length){stopAuto();return}
+  select(i,true);var t=all('.tile')[i];if(t&&t.scrollIntoView)t.scrollIntoView({block:'nearest'});
+  autoT=setTimeout(function(){runAuto(i+1)},2200);
+}
+
+/* ---------- quiz ---------- */
+function mk(o){
+  var opts=[{h:o.correct.h,cls:o.correct.cls||'',ok:true}],seen={};seen[o.correct.h]=1;
+  o.wrongs.forEach(function(w){if(!seen[w.h]){seen[w.h]=1;opts.push({h:w.h,cls:w.cls||o.correct.cls||'',ok:false})}});
+  return {key:o.key,text:o.text,big:o.big||'',bigcls:o.bigcls||'',say:o.say||'',auto:o.auto,review:o.review||'',opts:shuffle(opts)};
+}
+function scopeMarks(sc){
+  if(sc==='all')return MARKS.slice();
+  if(sc==='tanwin')return [markById('tfath'),markById('tkasr'),markById('tdamm')];
+  return [markById(sc)];
+}
+function arQ(sc){
+  var L,M;
+  if(sc==='letters'){
+    L=pick(LETTERS);var others=LETTERS.filter(function(x){return x!==L});
+    if(Math.random()<.5)return mk({key:'ln'+L.g,text:'ما اسم هذا الحرف؟',big:L.g,bigcls:'ar',correct:{h:L.n},wrongs:sample(others,3).map(function(x){return {h:x.n}}),review:L.g});
+    return mk({key:'lg'+L.g,text:'أين حرف «'+L.n+'»؟',correct:{h:L.g,cls:'ar'},wrongs:sample(others,3).map(function(x){return {h:x.g,cls:'ar'}}),review:L.g});
+  }
+  M=pick(scopeMarks(sc));
+  var pool=LETTERS.filter(function(x){return valid(x,M)});L=pick(pool);
+  var oM=MARKS.filter(function(x){return x!==M&&valid(L,x)&&!conf(M,x)});
+  var ts=[0,1,2];if(hasVoice('ar-SA'))ts.push(3);
+  var t=pick(ts),g=syl(L,M);
+  if(t===0)return mk({key:'0'+M.id+L.g,text:'ما اسم هذه العلامة؟',big:g,bigcls:'ar',correct:{h:M.name},wrongs:sample(MARKS.filter(function(x){return x!==M&&!conf(M,x)}),3).map(function(x){return {h:x.name}}),review:g});
+  if(t===1)return mk({key:'1'+M.id+L.g,text:'أين «'+L.n+'» مع '+M.name+'؟',correct:{h:g,cls:'ar'},wrongs:sample(pool.filter(function(x){return x!==L}),3).map(function(x){return {h:syl(x,M),cls:'ar'}}),review:g});
+  if(t===2)return mk({key:'2'+M.id+L.g,text:'أين الحرف الذي عليه '+M.name+'؟',correct:{h:g,cls:'ar'},wrongs:sample(oM,3).map(function(x){return {h:syl(L,x),cls:'ar'}}),review:g});
+  return mk({key:'3'+M.id+L.g,text:'استمع ثم اختر ما سمعت',say:g,auto:1,correct:{h:g,cls:'ar'},wrongs:sample(oM,3).map(function(x){return {h:syl(L,x),cls:'ar'}}),review:g});
+}
+function frWrongs(C,V){
+  var first=(CONF[C]||[]).slice(0,2).map(function(c){return c+V}),rest=[];
+  FV.forEach(function(v){if(v!==V)rest.push(C+v)});
+  FC.forEach(function(c){if(c!==C)rest.push(c+V)});
+  var out=first.slice();shuffle(rest).forEach(function(s){if(out.length<3&&out.indexOf(s)<0)out.push(s)});
+  return out.slice(0,3).map(function(s){return {h:s}});
+}
+function frQ(sc){
+  if(sc==='letters'){
+    var A=pick(FL),up=Math.random()<.5,wr=sample(FL.filter(function(x){return x!==A}),3);
+    return mk({key:'L'+A.l+(up?1:0),text:up?'Trouve la lettre minuscule de :':'Trouve la lettre majuscule de :',big:up?A.u:A.l,correct:{h:up?A.l:A.u,cls:'lat'},wrongs:wr.map(function(x){return {h:up?x.l:x.u,cls:'lat'}}),review:A.u+A.l});
+  }
+  var vs=sc==='all'?FV:sc==='nasal'?['ou','on','an']:[sc],V=pick(vs),C=pick(FC),s=C+V;
+  var ts=[0,1];if(hasVoice('fr-FR'))ts.push(2);var t=pick(ts);
+  var wr=frWrongs(C,V).map(function(w){return {h:w.h,cls:'lat'}});
+  if(t===0)return mk({key:'0'+s,text:'Complète :',big:C+' + '+V+' = ?',correct:{h:s,cls:'lat'},wrongs:wr,review:s});
+  if(t===1)return mk({key:'1'+s,text:'Trouve la syllabe :',big:s,correct:{h:s,cls:'lat'},wrongs:wr,review:s});
+  return mk({key:'2'+s,text:'Écoute et trouve la syllabe',say:s,auto:1,correct:{h:s,cls:'lat'},wrongs:wr,review:s});
+}
+function quizSetup(){
+  var o=LANG==='ar'?[['letters','الحروف','sun'],['all','كل الحركات','ink'],['fatha','الفتحة','coral'],['kasra','الكسرة','sky'],['damma','الضمة','mint'],['sukun','السكون','grape'],['shadda','الشدّة','pink'],['tanwin','التنوين','teal']]
+   :[['letters','Les lettres','sun'],['all','Toutes les syllabes','ink'],['a','a','coral'],['e','e','sky'],['i','i','mint'],['o','o','grape'],['u','u','pink'],['nasal','ou · on · an','orange']];
+  app.innerHTML=head({title:T('الاختبار','Le quiz'),sub:T('اختر ما تريد أن تختبر نفسك فيه','Choisis ton sujet'),back:1})+
+   '<div class="cards c4">'+o.map(function(x){return '<button class="card c-'+x[2]+'" data-act="qstart" data-sc="'+x[0]+'"><span class="big '+(LANG==='fr'?'lat sm':'sm')+'">'+(x[0]==='letters'?(LANG==='ar'?'أ ب':'Aa'):x[0]==='all'?I_STAR:(LANG==='ar'?syl(BA,markById(x[0]==='tanwin'?'tfath':x[0])):(x[0]==='nasal'?'on':'b'+x[0])))+'</span><span class="lbl">'+x[1]+'</span></button>'}).join('')+'</div>';
+  focusEl('.card');
+}
+function startQuiz(lang,sc){startGen(function(){return lang==='ar'?arQ(sc):frQ(sc)},lang,lang,null)}
+function startGen(gen,lang,menu,exitTo){
+  var list=[],keys={},g=0;
+  while(list.length<10&&g++<300){var q=gen();if(keys[q.key])continue;keys[q.key]=1;list.push(q)}
+  while(list.length<10)list.push(gen());
+  Q={lang:lang,gen:gen,menu:menu,exitTo:exitTo,list:list,i:0,score:0,wrong:[],res:[],locked:false};
+  renderQ();
+}
+function renderQ(){
+  var q=Q.list[Q.i],pips='';
+  for(var i=0;i<10;i++)pips+='<span class="pip '+(i<Q.i?(Q.res[i]?'y':'n'):i===Q.i?'cur':'')+'"></span>';
+  app.innerHTML=head({title:T('الاختبار','Le quiz'),back:1})+
+   '<div class="qwrap"><div class="qmeta"><span>'+T('السؤال '+(Q.i+1)+' من 10','Question '+(Q.i+1)+' sur 10')+'</span><div class="pips">'+pips+'</div></div>'+
+   '<div class="qtext">'+q.text+'</div>'+
+   (q.big?'<div class="qbig '+q.bigcls+'">'+q.big+'</div>':'')+
+   (q.say?'<div class="qsaywrap"><button class="btn" data-act="qsay">'+I_ON+'<span>'+T('استمع','Écouter')+'</span></button></div>':'')+
+   '<div class="opts">'+q.opts.map(function(o,i){return '<button class="opt o'+i+' '+o.cls+'" data-act="ans" data-i="'+i+'">'+o.h+'</button>'}).join('')+'</div>'+
+   '<div class="fb" id="fb" aria-live="polite"></div></div>';
+  Q.locked=false;
+  focusEl('.opt');
+  if(q.say&&q.auto)setTimeout(function(){say(q.say,Q&&Q.lang==='ar'?'ar-SA':'fr-FR')},300);
+}
+function answer(i){
+  if(!Q||Q.locked)return;Q.locked=true;
+  var q=Q.list[Q.i],o=q.opts[i];
+  all('.opt').forEach(function(b,k){if(q.opts[k].ok)b.classList.add('ok');else if(k===i)b.classList.add('bad')});
+  var fb=$('#fb');
+  if(o.ok){Q.score++;Q.res.push(1);ding();fb.style.color='var(--good)';fb.textContent=pick(Q.lang==='ar'?['أحسنت!','ممتاز!','رائع!','برافو!']:['Bravo !','Super !','Génial !','Parfait !'])}
+  else{Q.res.push(0);Q.wrong.push(q.review);buzz();fb.style.color='var(--sun)';fb.textContent=Q.lang==='ar'?'ليس تمامًا. الجواب الصحيح عليه علامة ✓':'Pas tout à fait. La bonne réponse a la marque ✓'}
+  qTimer=setTimeout(function(){if(!Q)return;if(Q.i<9){Q.i++;renderQ()}else renderResult()},1600);
+}
+function renderResult(){
+  var s=Q.score,stars=Math.round(s/2),st='';
+  for(var i=0;i<5;i++)st+=starSvg(i<stars);
+  var msg=Q.lang==='ar'?(s>=9?'أنت بطل الحروف!':s>=7?'عمل رائع!':s>=5?'جيد، تابع التدريب':'لا بأس، لنراجع ونحاول مرة أخرى'):(s>=9?'Tu es un champion !':s>=7?'Très bien !':s>=5?'Bien, continue !':'Pas grave, on révise et on recommence !');
+  var seen={},weak=Q.wrong.filter(function(w){if(seen[w])return false;seen[w]=1;return true}).slice(0,12);
+  app.innerHTML=head({title:T('النتيجة','Résultat'),back:1})+
+   '<div class="res"><div class="stars">'+st+'</div><div class="score" dir="ltr">'+s+' / 10</div><div class="msg">'+msg+'</div>'+
+   (weak.length?'<div>'+T('للمراجعة:','À revoir :')+'</div><div class="weak '+(Q.lang==='fr'?'lat':'')+'">'+weak.map(function(w){return '<span>'+w+'</span>'}).join('')+'</div>':'')+
+   '<div class="row"><button class="big-btn" data-act="qagain">'+T('أعد الاختبار','Rejouer')+'</button><button class="big-btn alt" data-go="'+Q.menu+'">'+T('القائمة','Menu')+'</button></div></div>';
+  focusEl('.big-btn');
+}
+
+/* ---------- book module: data ---------- */
+var ZWJ='‍',NOCONN='دذرز';
+var ORDER=[
+ {c:'د',n:'دال',k:'دُودَةٌ',e:'🐛',col:'coral'},
+ {c:'م',n:'ميم',k:'مَوْزَةٌ',e:'🍌',col:'sky'},
+ {c:'ر',n:'راء',k:'رَسْمٌ',e:'🎨',col:'mint'},
+ {c:'ب',n:'باء',k:'بَطَّةٌ',e:'🦆',col:'grape'},
+ {c:'س',n:'سين',k:'سَمَكَةٌ',e:'🐟',col:'pink'},
+ {c:'ف',n:'فاء',k:'فِيلٌ',e:'🐘',col:'orange'},
+ {c:'ل',n:'لام',k:'لَيْمُونٌ',e:'🍋',col:'lime'},
+ {c:'ص',n:'صاد',k:'صَابُونٌ',e:'🧼',col:'teal'},
+ {c:'ذ',n:'ذال',k:'ذُرَةٌ',e:'🌽',col:'coral'},
+ {c:'ز',n:'زاي',k:'زَرَافَةٌ',e:'🦒',col:'sky'},
+ {c:'ط',n:'طاء',k:'طَمَاطِمُ',e:'🍅',col:'mint'},
+ {c:'ض',n:'ضاد',k:'ضِفْدَعٌ',e:'🐸',col:'grape'},
+ {c:'ن',n:'نون',k:'نَمْلَةٌ',e:'🐜',col:'pink'},
+ {c:'ع',n:'عين',k:'عُصْفُورٌ',e:'🐦',col:'orange'},
+ {c:'ت',n:'تاء',k:'تُفَّاحَةٌ',e:'🍎',col:'lime'}
+];
+var IDX={};ORDER.forEach(function(L,i){IDX[L.c]=i});
+var SIM={'د':'ذرز','ذ':'درز','ر':'زدذ','ز':'رذد','ب':'تنث','ت':'بنث','ن':'بتث','س':'شصض','ص':'ضسش','ض':'صطظ','ط':'ظصض','ع':'غفق','ف':'قعغ','م':'ه','ل':'ا'};
+var UNITS={1:{t:'الوحدة الأولى',s:'من نحن؟',th:'كيف أقدّم نفسي؟ · ماذا أفعل في مدرستي؟'},2:{t:'الوحدة الثانية',s:'',th:'من هم أفراد أسرتي؟ · كيف أساعد أفراد أسرتي؟'}};
+var WEEKS={'1-1':[0],'1-2':[1,2],'1-3':[3,4],'1-4':[5,6],'2-1':[7,8],'2-2':[9,10],'2-3':[11,12],'2-4':[13,14]};
+var WNAME=['الأول','الثاني','الثالث','الرابع','الخامس','السادس'];
+var WCOL=['coral','sky','mint','grape','pink','orange'];
+var RV={
+ '1-1':{t:'مراجعة الحرفين د و م',set:[0,1]},'1-2':{t:'مراجعة الحرفين ر و ب',set:[2,3]},
+ '1-3':{t:'مراجعة الحروف س و ل و ف',set:[4,6,5]},'1-4':{t:'مراجعة كل حروف الوحدة الأولى',set:[0,1,2,3,4,5,6]},
+ '2-1':{t:'مراجعة الحرفين ص و ذ',set:[7,8]},'2-2':{t:'مراجعة الحرفين ز و ط',set:[9,10]},
+ '2-3':{t:'مراجعة الحرفين ض و ن',set:[11,12]},'2-4':{t:'مراجعة الحرفين ع و ت',set:[13,14]},
+ '2-5':{t:'مراجعة كل حروف الوحدة الثانية',set:[7,8,9,10,11,12,13,14]}
+};
+var KALL=['fatha','damma','kasra','aa','uu','ii','tfath','tdamm','tkasr'];
+var KSET={s2:['fatha','damma','kasra'],s3:['aa','uu','ii'],s4:['tfath','tdamm','tkasr']};
+var KLAB={fatha:'فتحة',damma:'ضمة',kasra:'كسرة',aa:'ألف المد',uu:'واو المد',ii:'ياء المد',tfath:'تنوين الفتح',tdamm:'تنوين الضم',tkasr:'تنوين الكسر'};
+var KMARK={fatha:'ـَ',damma:'ـُ',kasra:'ـِ',aa:'ا',uu:'و',ii:'ي',tfath:'ـً',tdamm:'ـٌ',tkasr:'ـٍ'};
+var KCONF={aa:['tfath'],tfath:['aa']};
+var STEPT={s2:'الحركات القصيرة',s3:'الحركات الطويلة',s4:'التنوين'};
+var STEPR={s2:'الحركات القصيرة هي الفتحة والضمة والكسرة. ندمج الحرف مع الحركة ونقرأ.',s3:'حروف المدّ هي الألف والواو والياء. ندمج الحرف مع حرف المدّ ونقرأ.',s4:'التنوين هو تنوين الفتح وتنوين الضم وتنوين الكسر. ندمج الحرف مع التنوين ونقرأ.'};
+function sylb(c,k){
+  switch(k){
+    case 'fatha':return c+'َ';case 'damma':return c+'ُ';case 'kasra':return c+'ِ';
+    case 'aa':return c+'ا';case 'uu':return c+'و';case 'ii':return c+'ي';
+    case 'tfath':return c+'اً';case 'tdamm':return c+'ٌ';default:return c+'ٍ';
+  }
+}
+var RAW=[
+ ['دُودَةٌ','🐛'],['مَامَا','👩'],['بَابَا','👨'],['دُبٌّ','🐻'],['بَابٌ','🚪'],['دَارٌ','🏠'],['بُومَةٌ','🦉'],['دُمْيَةٌ','🧸'],
+ ['سَيَّارَةٌ','🚗'],['دَرْسٌ','📖'],['مَدْرَسَةٌ','🏫'],['سَرِيرٌ','🛏️'],['رَسْمٌ','🎨'],['فَمٌ','👄'],['فَرَسٌ','🐴'],['فِيلٌ','🐘'],
+ ['وَلَدٌ','👦'],['سَلَامٌ','👋'],['رِيمٌ','🦌'],['لَيْلٌ','🌙'],['سَلَّةٌ','🧺'],['بَلَدٌ','🌍'],['دَمٌ',''],
+ ['صُورَةٌ','🖼️'],['صَيْفٌ','☀️'],['صِرْصَارٌ','🦗'],['صَابُونٌ','🧼'],['ذِيبٌ','🐺'],['ذُرَةٌ','🌽'],['لَذِيذٌ','😋'],
+ ['زَرَافَةٌ','🦒'],['رُزٌّ','🍚'],['مَوْزٌ','🍌'],['طَمَاطِمُ','🍅'],['طَبْلٌ','🥁'],['بَطَّةٌ','🦆'],['طِفْلٌ','👶'],['فُطُورٌ','🍳'],
+ ['طَيَّارَةٌ','✈️'],['مَرِيضٌ','🤒'],['رِيَاضَةٌ','⚽'],['ضَابِطٌ','👮'],['ضِفْدَعٌ','🐸'],['نَارٌ','🔥'],['نُورٌ','💡'],
+ ['نَمْلَةٌ','🐜'],['نَسْرٌ','🦅'],['لَبَنٌ','🥛'],['سَفِينَةٌ','🚢'],['مِيزَانٌ','⚖️'],['دِينَارٌ','💰'],['عِنَبٌ','🍇'],
+ ['عَيْنٌ','👁️'],['عَلَمٌ','🚩'],['عَسَلٌ','🍯'],['عُصْفُورٌ','🐦'],['سَاعَةٌ','⏰'],['ذِرَاعٌ','💪'],['تُوتٌ','🍓'],
+ ['صَوْتٌ','🔊'],['بَيْتٌ','🏡'],['تِلْمِيذٌ','🧒'],['تِلْفَازٌ','📺'],['بُسْتَانٌ','🌳'],['فُسْتَانٌ','👗'],['بِنْتٌ','👧'],['لَيْمُونٌ','🍋']
+];
+function wlets(w){return w.replace(/[ً-ْٰـ]/g,'').split('')}
+var VOC=[],BADW=[];
+RAW.forEach(function(r){
+  var ok=true,mx=-1,set={},ls=wlets(r[0]);
+  ls.forEach(function(ch){if(IDX[ch]!==undefined){set[ch]=1;if(IDX[ch]>mx)mx=IDX[ch]}else if('اويةءأإى'.indexOf(ch)<0)ok=false});
+  if(ok)VOC.push({w:r[0],e:r[1],max:mx,set:set,f:ls[0]});else BADW.push(r[0]);
+});
+function hl(w,c){
+  var out='',i=0;
+  while(i<w.length){var ch=w.charAt(i),j=i+1;while(j<w.length&&/[ً-ْٰ]/.test(w.charAt(j)))j++;var seg=w.slice(i,j);out+=(ch===c)?'<span class="hl">'+seg+'</span>':seg;i=j}
+  return out;
+}
+function forms(c){
+  if(NOCONN.indexOf(c)>=0)return [[c,'منفصل'],[ZWJ+c,'في الآخر']];
+  return [[c,'منفصل'],[c+ZWJ,'في الأول'],[ZWJ+c+ZWJ,'في الوسط'],[ZWJ+c,'في الآخر']];
+}
+function weekOf(i){for(var k in WEEKS){if(WEEKS[k].indexOf(i)>=0)return k}return '1-1'}
+function validHash(h){if(mValid(h))return true;
+  if(fValid(h))return true;
+  return h==='home'||/^(ar|fr)(-[a-z]+)?$/.test(h)||/^u[12]$/.test(h)||/^w[12]-[1-6]$/.test(h)||/^l([1-9]|1[0-5])(-s[1-6])?$/.test(h)||/^r[12]-[1-5]$/.test(h)||/^v[12]-[1-4]$/.test(h)||/^x[12]$/.test(h);
+}
+function newRoute(h){return !/^(ar|fr)(-[a-z]+)?$/.test(h)}
+function parentOf(h){
+  var m;
+  if(isMRoute(h))return mParent(h);
+  if(h==='f'||/^fg\d$/.test(h)||/^ft-/.test(h)||/^fq-/.test(h)||/^(g|c|gl-.*|gq-.*|cs-.*|cq-.*)$/.test(h))return fParent(h);
+  if(h==='home'||h==='ar'||h==='fr'||/^u/.test(h))return 'home';
+  if(/^(ar|fr)-/.test(h))return h.slice(0,2);
+  if((m=h.match(/^w(\d)-/)))return 'u'+m[1];
+  if((m=h.match(/^l(\d+)-s/)))return 'l'+m[1];
+  if((m=h.match(/^l(\d+)$/)))return 'w'+weekOf(+m[1]-1);
+  if((m=h.match(/^r(\d)-/)))return 'w'+m[1]+'-5';
+  if((m=h.match(/^v(\d)-(\d)$/)))return 'w'+m[1]+'-'+m[2];
+  if((m=h.match(/^x(\d)$/)))return 'w'+m[1]+'-6';
+  return 'home';
+}
+
+/* ---------- book module: quiz generator ---------- */
+function qgen(set,limit){
+  var avail=VOC.filter(function(v){return v.max<=limit});
+  function wordsWith(c,pool){return pool.filter(function(v){return v.set[c]})}
+  function lettersBelow(excl,n){
+    var pool=ORDER.filter(function(x,i){return i<=limit&&x.c!==excl}),rest=ORDER.filter(function(x){return x.c!==excl&&pool.indexOf(x)<0});
+    var out=shuffle(pool).slice(0,n);
+    shuffle(rest).forEach(function(x){if(out.length<n)out.push(x)});
+    return out;
+  }
+  function one(){
+    var L=ORDER[pick(set)];
+    var types=['name','kind','word','pic','first'];
+    if(hasVoice('ar-SA'))types.push('listen');
+    var t=pick(types),i,k;
+    if(t==='kind'||t==='listen'){
+      k=pick(KALL);
+      var ks=KALL.filter(function(x){return x!==k&&(KCONF[k]||[]).indexOf(x)<0});
+      var wr=sample(ks,3).map(function(x){return {h:sylb(L.c,x),cls:'ar'}});
+      if(t==='kind')return mk({key:'k'+L.c+k,text:'أين المقطع الذي فيه '+KLAB[k]+'؟',correct:{h:sylb(L.c,k),cls:'ar'},wrongs:wr,review:sylb(L.c,k)});
+      return mk({key:'a'+L.c+k,text:'استمع ثم اختر ما سمعت',say:sylb(L.c,k),auto:1,correct:{h:sylb(L.c,k),cls:'ar'},wrongs:wr,review:sylb(L.c,k)});
+    }
+    if(t==='word'){
+      var yes=wordsWith(L.c,avail);if(!yes.length)yes=wordsWith(L.c,VOC);
+      if(!yes.length)t='name';else{
+        var w=pick(yes),no=VOC.filter(function(v){return !v.set[L.c]}),noA=no.filter(function(v){return v.max<=limit});
+        var wrs=sample(noA,3);shuffle(no).forEach(function(v){if(wrs.length<3&&wrs.indexOf(v)<0)wrs.push(v)});
+        return mk({key:'w'+L.c+w.w,text:'أي كلمة فيها حرف «'+L.c+'»؟',correct:{h:w.w,cls:'wd'},wrongs:wrs.map(function(v){return {h:v.w,cls:'wd'}}),review:L.c});
+      }
+    }
+    if(t==='pic'){
+      var wp=wordsWith(L.c,avail).filter(function(v){return v.e});if(!wp.length)wp=wordsWith(L.c,VOC).filter(function(v){return v.e});
+      if(!wp.length)t='name';else{
+        var w2=pick(wp),oth=avail.filter(function(v){return v.e&&v.e!==w2.e}),oa=sample(oth,3);
+        shuffle(VOC.filter(function(v){return v.e&&v.e!==w2.e})).forEach(function(v){if(oa.length<3&&oa.map(function(z){return z.e}).indexOf(v.e)<0)oa.push(v)});
+        return mk({key:'p'+w2.w,text:'أين صورة هذه الكلمة؟',big:w2.w,bigcls:'wdbig',correct:{h:w2.e,cls:'emo'},wrongs:oa.map(function(v){return {h:v.e,cls:'emo'}}),review:w2.w});
+      }
+    }
+    if(t==='first'){
+      var wf=VOC.filter(function(v){return v.f===L.c&&v.e});
+      if(!wf.length)t='name';else{
+        var wa=wf.filter(function(v){return v.max<=limit});var w3=pick(wa.length?wa:wf);
+        return mk({key:'f'+w3.w,text:'بأي حرف تبدأ هذه الكلمة؟',big:w3.e,bigcls:'emo',correct:{h:L.c,cls:'ar'},wrongs:lettersBelow(L.c,3).map(function(x){return {h:x.c,cls:'ar'}}),review:L.c});
+      }
+    }
+    var f=forms(L.c),fi=Math.floor(Math.random()*f.length);
+    return mk({key:'n'+L.c+fi,text:'ما اسم هذا الحرف؟',big:f[fi][0],bigcls:'ar',correct:{h:L.n},wrongs:sample(ORDER.filter(function(x){return x!==L}),3).map(function(x){return {h:x.n}}),review:L.c});
+  }
+  return one;
+}
+
+/* ---------- book module: pages ---------- */
+var CC=null,DEMO=null,PQ=null;
+function tilesHtml(items,cls){return items.map(function(it){return '<button class="tile '+cls+' c-'+it.col+'" data-say="'+it.say+'">'+it.html+'</button>'}).join('')}
+function rule(col,badge,text,lat){return '<div class="rule c-'+col+'"><span class="mk '+(lat?'lat':'')+'">'+badge+'</span><span>'+text+'</span></div>'}
+function homePage(){
+  app.innerHTML=head({title:'حروفي الملونة',sub:'اختر ما تريد أن تتعلّمه'})+'<div class="cards tall">'+
+   card('u1','coral','د م ر','الوحدة الأولى','sm')+card('u2','sky','ص ذ ز','الوحدة الثانية','sm')+
+   card('ar','mint','بَ بِ بُ','الحروف مع الحركات','sm')+card('f','teal','🍎 🐢','Le français en images','sm lat')+card('fr','sun','ba be bi','Lettres et syllabes','lat sm')+card('mt','orange','1 2 3','الرياضيات','sm')+'</div>';
+  focusEl(null);
+}
+function unitPage(u){
+  var U=UNITS[u],cards=[];
+  for(var w=1;w<=6;w++){
+    var key=u+'-'+w,col=WCOL[w-1];
+    if(w<=4)cards.push(card('w'+key,col,WEEKS[key].map(function(i){return ORDER[i].c}).join(' '),'الأسبوع '+WNAME[w-1],'sm'));
+    else if(w===5)cards.push(card('w'+key,col,I_STAR,'الأسبوع '+WNAME[w-1]+': مراجعة'));
+    else cards.push(card('w'+key,col,'📖','الأسبوع '+WNAME[w-1]+': معجمي المصوّر','sm'));
+  }
+  app.innerHTML=head({title:U.t+(U.s?': '+U.s:''),sub:U.th,back:1})+'<div class="cards c3">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function weekPage(u,w){
+  var key=u+'-'+w,cards=[],title='الأسبوع '+WNAME[w-1];
+  if(w<=4){
+    WEEKS[key].forEach(function(i){cards.push(card('l'+(i+1),ORDER[i].col,ORDER[i].c,'حرف '+ORDER[i].n))});
+    cards.push(card('v'+key,'ink',I_STAR,'أراجع ما تعلمته','sm'));
+  }else if(w===5){
+    for(var k=1;k<=5;k++){var r=RV[u+'-'+k];if(r)cards.push(card('r'+u+'-'+k,WCOL[k-1],r.set.map(function(i){return ORDER[i].c}).join(' '),r.t,'sm'))}
+  }else cards.push(card('x'+u,'sun','📖','معجمي المصوّر','sm'));
+  app.innerHTML=head({title:title,sub:UNITS[u].t,back:1})+'<div class="cards c3">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function hubPage(i){
+  var L=ORDER[i],c=L.c,wk=weekOf(i),u=wk.charAt(0);
+  var steps=[
+   ['s1','sun',c,'أتعرّف حرف '+c,''],
+   ['s2','coral',sylb(c,'fatha')+' '+sylb(c,'damma')+' '+sylb(c,'kasra'),'الحركات القصيرة','sm'],
+   ['s3','sky',sylb(c,'aa')+' '+sylb(c,'uu')+' '+sylb(c,'ii'),'الحركات الطويلة','sm'],
+   ['s4','mint',sylb(c,'tfath')+' '+sylb(c,'tdamm')+' '+sylb(c,'tkasr'),'التنوين','sm'],
+   ['s5','grape','📖','أتدرّب على القراءة','sm'],
+   ['s6','ink',I_STAR,'أراجع ما تعلمته','']
+  ];
+  app.innerHTML=head({title:'حرف '+L.n+' ('+c+')',sub:UNITS[u].t+' · الأسبوع '+WNAME[+wk.charAt(2)-1],back:1})+'<div class="cards c3">'+
+   steps.map(function(s){return card('l'+(i+1)+'-'+s[0],s[1],s[2],s[3],s[4])}).join('')+'</div>';
+  focusEl(null);
+}
+function s1Page(i){
+  var L=ORDER[i],f=forms(L.c),cards=[],tc=f.length===2?3:4,seen={};
+  seen[L.c]=1;
+  for(var k=0;k<tc;k++)cards.push({g:f[k%f.length][0],t:1});
+  var ds=[];
+  (SIM[L.c]||'').split('').slice(0,2).forEach(function(ch){if(!seen[ch]){seen[ch]=1;ds.push(ch)}});
+  shuffle((ORDER.map(function(x){return x.c}).join('')+'ثشظغكجحخه').split('')).forEach(function(ch){if(!seen[ch]&&ds.length<8-tc){seen[ch]=1;ds.push(ch)}});
+  ds.forEach(function(ch){var ff=forms(ch);cards.push({g:pick(ff)[0],t:0})});
+  cards=shuffle(cards);CC={found:0,total:tc,cards:cards};
+  app.innerHTML=head({title:'أتعرّف حرف '+L.c,back:1})+
+   '<div class="two"><div class="panel c-'+L.col+'"><div class="glyph" data-say="'+L.n+'">'+L.c+'</div><div class="sname" style="text-align:center">'+L.n+'</div>'+
+   '<div class="kw" data-say="'+L.k.replace(/[ً-ْ]/g,'')+'"><span class="e">'+L.e+'</span> '+hl(L.k,L.c)+'</div>'+
+   '<div class="acts"><button class="btn" data-say="'+L.n+'">'+I_ON+'<span>استمع</span></button></div>'+
+   '<div class="forms">'+f.map(function(x){return '<div class="form"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join('')+'</div>'+
+   '<div class="note">'+voiceNote('ar-SA')+'</div></div>'+
+   '<div class="panel"><h2 class="ptitle">ألوّن بطاقات حرف '+L.c+'</h2><div class="ccards c-'+L.col+'">'+
+   cards.map(function(cd,n){return '<button class="ccard" data-act="cc" data-i="'+n+'">'+cd.g+'</button>'}).join('')+'</div><div class="fb" id="ccfb"></div></div></div>';
+  focusEl('.ccard');
+}
+function combPage(i,s){
+  var L=ORDER[i],ks=KSET[s],rows=[i],p;
+  for(p=i-1;p>=0&&rows.length<3;p--)rows.push(p);
+  DEMO={i:i,ks:ks};
+  var items=[];
+  rows.forEach(function(r){ks.forEach(function(k){var sy=sylb(ORDER[r].c,k);items.push({col:ORDER[r].col,say:sy,html:sy})})});
+  app.innerHTML=head({title:STEPT[s]+' · حرف '+L.c,back:1})+rule(L.col,L.c,STEPR[s])+
+   '<div class="two"><div class="panel c-'+L.col+'"><h2 class="ptitle">أتدرّب على الدمج</h2><div class="glyph" id="dl">'+L.c+'</div>'+
+   '<div class="eq" id="eq"></div><div class="marks">'+ks.map(function(k){return '<button class="mbtn" data-act="mk" data-k="'+k+'" aria-label="'+KLAB[k]+'">'+KMARK[k]+'</button>'}).join('')+'</div></div>'+
+   '<div class="panel"><h2 class="ptitle">أقرأ</h2><div class="tiles t3">'+tilesHtml(items,'syl')+'</div></div></div>';
+  focusEl('.mbtn');
+}
+function practicePage(title,sub,set,limit,col,back){
+  var lo=Math.min.apply(null,set),pool=set.slice(),p;
+  if(set.length===1){for(p=lo-1;p>=0&&pool.length<4;p--)pool.push(p)}
+  var items=[];
+  set.forEach(function(i){sample(KALL,3).forEach(function(k){var sy=sylb(ORDER[i].c,k);items.push({col:ORDER[i].col,say:sy,html:sy})})});
+  var others=pool.filter(function(i){return set.indexOf(i)<0});
+  while(items.length<12&&others.length){var i2=pick(others),sy2=sylb(ORDER[i2].c,pick(KALL));items.push({col:ORDER[i2].col,say:sy2,html:sy2})}
+  items=shuffle(items).slice(0,15);
+  var ws=shuffle(VOC.filter(function(v){return v.max<=limit&&set.some(function(i){return v.set[ORDER[i].c]})})).slice(0,9);
+  var wit=ws.map(function(v){return {col:v.max>=0?ORDER[v.max].col:'sun',say:v.w,html:(v.e?'<span class="we">'+v.e+'</span>':'')+'<span>'+v.w+'</span>'}});
+  PQ={gen:qgen(set,limit)};
+  app.innerHTML=head({title:title,sub:sub,back:1})+
+   '<div class="two"><div class="panel"><h2 class="ptitle">أقرأ مقاطع</h2><div class="tiles t4">'+tilesHtml(items,'syl')+'</div></div>'+
+   '<div class="panel"><h2 class="ptitle">أقرأ كلمات</h2>'+(wit.length?'<div class="tiles t3">'+tilesHtml(wit,'word')+'</div>':'<p class="sub" style="text-align:center">ستظهر كلمات أكثر كلما تعلّمت حروفًا جديدة.</p>')+'</div></div>'+
+   '<div class="row" style="margin-top:1rem"><button class="big-btn" data-act="pq">أختبر نفسي</button></div>';
+  focusEl('.tile');
+}
+function lexPage(u){
+  var ws=VOC.filter(function(v){return v.e&&(u===1?v.max<=6:v.max>=7)});
+  var cols=['coral','sky','mint','grape','pink','orange','lime','teal','sun'];
+  app.innerHTML=head({title:'معجمي المصوّر',sub:UNITS[u].t,back:1})+'<div class="lex">'+
+   ws.map(function(v,n){return '<button class="lcard c-'+cols[n%cols.length]+'" data-say="'+v.w+'"><span class="we">'+v.e+'</span><span class="ww">'+v.w+'</span></button>'}).join('')+'</div>';
+  focusEl('.lcard');
+}
+function renderNew(h){
+  var m;
+  if(isMRoute(h))return mRender(h);
+  if(/^(f|fg\d|ft-.*|fq-.*|g|c|gl-.*|gq-.*|cs-.*|cq-.*)$/.test(h))return fRender(h);
+  if(h==='home')return homePage();
+  if((m=h.match(/^u(\d)$/)))return unitPage(+m[1]);
+  if((m=h.match(/^w(\d)-(\d)$/)))return weekPage(+m[1],+m[2]);
+  if((m=h.match(/^x(\d)$/)))return lexPage(+m[1]);
+  if((m=h.match(/^r(\d)-(\d)$/))){var r=RV[m[1]+'-'+m[2]];if(!r)return go('home');var mx=Math.max.apply(null,r.set);return practicePage(r.t,UNITS[m[1]].t,r.set,mx,'sun')}
+  if((m=h.match(/^v(\d)-(\d)$/))){var key=m[1]+'-'+m[2],set=WEEKS[key],par='w'+key;return startGen(qgen(set,Math.max.apply(null,set)),'ar',par,par)}
+  if((m=h.match(/^l(\d+)(?:-(s\d))?$/))){
+    var i=+m[1]-1,s=m[2];
+    if(!s)return hubPage(i);
+    if(s==='s1')return s1Page(i);
+    if(s==='s5')return practicePage('أتدرّب على القراءة \u00b7 حرف '+ORDER[i].c,'',[i],i,ORDER[i].col,'');
+    if(s==='s6'){var hub='l'+(i+1);return startGen(qgen([i],i),'ar',hub,hub)}
+    return combPage(i,s);
+  }
+  go('home');
+}
+function bookClick(a,t){
+  var n,k,c,s;
+  if(a==='cc'&&CC){
+    n=+t.getAttribute('data-i');var cd=CC.cards[n];
+    if(t.classList.contains('on'))return true;
+    if(cd.t){t.classList.add('on');CC.found++;ding();if(CC.found>=CC.total){var fb=document.getElementById('ccfb');if(fb)fb.textContent='أحسنت! وجدت كل البطاقات'}}
+    else{buzz();t.classList.remove('shake');void t.offsetWidth;t.classList.add('shake')}
+    return true;
+  }
+  if(a==='mk'&&DEMO){
+    k=t.getAttribute('data-k');c=ORDER[DEMO.i].c;s=sylb(c,k);
+    document.getElementById('dl').textContent=s;
+    document.getElementById('eq').innerHTML='<span>'+c+'</span><span>+</span><span>'+KMARK[k]+'</span><span>=</span><span>'+s+'</span>';
+    all('.mbtn').forEach(function(b){b.classList.toggle('sel',b===t)});
+    say(s,'ar-SA');return true;
+  }
+  if(a==='pq'&&PQ){startGen(PQ.gen,'ar',cur(),null);return true}
+  return false;
+}
+
+window.__hf={qgen:qgen,ORDER:ORDER,VOC:VOC,BADW:BADW,arQ:arQ,frQ:frQ,validHash:validHash};
+
+/* ---------- livre français: données (partie 1) ---------- */
+var FT=[
+ {id:'nombres',t:'Les nombres',e:'🔢',col:'coral',w:[['zéro','0'],['un','1'],['deux','2'],['trois','3'],['quatre','4'],['cinq','5'],['six','6'],['sept','7'],['huit','8'],['neuf','9'],['dix','10'],['onze','11'],['douze','12'],['treize','13'],['quatorze','14'],['quinze','15'],['seize','16'],['dix-sept','17'],['dix-huit','18'],['dix-neuf','19'],['vingt','20'],['trente','30'],['quarante','40'],['cinquante','50']]},
+ {id:'famille',t:'Ma famille',e:'👨‍👩‍👧‍👦',col:'sky',w:[['la mère','👩'],['le père','👨'],['le frère','👦'],['la sœur','👧'],['le bébé','👶'],['la grand-mère','👵'],['le grand-père','👴'],['la famille','👨‍👩‍👧‍👦']]},
+ {id:'corps',t:'Le corps',e:'🧍',col:'mint',w:[['la tête','🗣️'],['l’œil','👁️'],['le nez','👃'],['la bouche','👄'],['l’oreille','👂'],['la main','✋'],['le pied','🦶'],['la jambe','🦵'],['le bras','💪'],['la dent','🦷'],['la langue','👅'],['le cœur','❤️']]},
+ {id:'vetements',t:'Les vêtements',e:'👕',col:'grape',w:[['un t-shirt','👕'],['un pantalon','👖'],['une robe','👗'],['un manteau','🧥'],['une chaussette','🧦'],['un chapeau','👒'],['une casquette','🧢'],['une écharpe','🧣'],['des gants','🧤'],['des lunettes','👓'],['des bottes','🥾'],['des souliers','👟']]},
+ {id:'couleurs',t:'Les couleurs',e:'🎨',col:'pink',w:[['rouge','🔴'],['orange','🟠'],['jaune','🟡'],['vert','🟢'],['bleu','🔵'],['violet','🟣'],['brun','🟤'],['noir','⚫'],['blanc','⚪']]},
+ {id:'formes',t:'Les formes',e:'🔷',col:'orange',w:[['un cercle','⭕'],['un carré','🟦'],['un triangle','🔺'],['un losange','🔶'],['une étoile','⭐'],['un cœur','💜']]},
+ {id:'contraires',t:'Les contraires',e:'↔️',col:'lime',w:[['chaud','🔥'],['froid','🧊'],['grand','🐘'],['petit','🐭'],['jour','☀️'],['nuit','🌙'],['heureux','😀'],['triste','😢'],['plein','🍼'],['rapide','🐇'],['lent','🐢'],['propre','🧼']]},
+ {id:'repas',t:'Les repas',e:'🍽️',col:'teal',w:[['le déjeuner','🥣'],['la collation','🍎'],['le dîner','🍲'],['le souper','🍝'],['une assiette','🍽️'],['une fourchette','🍴'],['un verre','🥛'],['une cuillère','🥄']]},
+ {id:'fruits',t:'Les fruits',e:'🍎',col:'coral',w:[['une pomme','🍎'],['une banane','🍌'],['une orange','🍊'],['une fraise','🍓'],['un citron','🍋'],['une poire','🍐'],['une pêche','🍑'],['des raisins','🍇'],['un ananas','🍍'],['une cerise','🍒'],['un melon d’eau','🍉'],['un kiwi','🥝']]},
+ {id:'legumes',t:'Les légumes',e:'🥕',col:'mint',w:[['une carotte','🥕'],['une tomate','🍅'],['une pomme de terre','🥔'],['un oignon','🧅'],['du maïs','🌽'],['un brocoli','🥦'],['un concombre','🥒'],['une laitue','🥬'],['un poivron','🫑'],['des champignons','🍄'],['de l’ail','🧄'],['une aubergine','🍆']]},
+ {id:'viandes',t:'Les viandes et les céréales',e:'🍞',col:'orange',w:[['du poulet','🍗'],['du bœuf','🥩'],['du poisson','🐟'],['des œufs','🥚'],['du pain','🍞'],['du riz','🍚'],['des pâtes','🍝'],['du fromage','🧀'],['une crêpe','🥞'],['un croissant','🥐'],['une pizza','🍕'],['un sandwich','🥪']]},
+ {id:'boissons',t:'Les boissons et les desserts',e:'🥤',col:'sky',w:[['de l’eau','💧'],['du lait','🥛'],['du jus','🧃'],['du thé','🍵'],['un gâteau','🍰'],['une glace','🍦'],['un biscuit','🍪'],['du chocolat','🍫'],['un beigne','🍩'],['des bonbons','🍬'],['du miel','🍯'],['du popcorn','🍿']]},
+ {id:'actions',t:'Les actions de la journée',e:'⏰',col:'grape',w:[['se réveiller','⏰'],['se laver','🚿'],['se brosser les dents','🪥'],['s’habiller','👔'],['manger','🍽️'],['jouer','🧸'],['lire','📖'],['dormir','😴'],['marcher','🚶'],['courir','🏃'],['sauter','🤸'],['chanter','🎤']]},
+ {id:'sentiments',t:'Les sentiments',e:'😊',col:'pink',w:[['content','😊'],['triste','😢'],['fâché','😠'],['surpris','😲'],['fatigué','😴'],['malade','🤒'],['peureux','😨'],['amoureux','😍'],['gêné','😳'],['fier','😎']]},
+ {id:'sante',t:'La santé',e:'🩺',col:'teal',w:[['un docteur','🧑‍⚕️'],['un thermomètre','🌡️'],['un pansement','🩹'],['un médicament','💊'],['un rhume','🤧'],['la fièvre','🤒'],['un mal de tête','🤕'],['un mal de dents','🦷'],['une ambulance','🚑'],['l’hôpital','🏥']]},
+ {id:'fetes',t:'Les fêtes',e:'🎉',col:'lime',w:[['un anniversaire','🎂'],['un cadeau','🎁'],['un ballon','🎈'],['Halloween','🎃'],['une citrouille','🎃'],['un fantôme','👻'],['Noël','🎄'],['un sapin','🌲'],['le père Noël','🎅'],['la Saint-Valentin','💌'],['Pâques','🐰'],['un feu d’artifice','🎆']]}
+];
+
+/* ---------- livre français: données (partie 2) ---------- */
+FT=FT.concat([
+ {id:'ecole',t:'L’école',e:'🏫',col:'coral',w:[['une école','🏫'],['un livre','📘'],['un crayon','✏️'],['un cahier','📓'],['des ciseaux','✂️'],['un sac à dos','🎒'],['une règle','📏'],['une calculatrice','🧮'],['un ordinateur','💻'],['un globe','🌍'],['un enseignant','🧑‍🏫'],['un élève','🧒']]},
+ {id:'matieres',t:'Les matières',e:'📚',col:'sky',w:[['le français','🇫🇷'],['les mathématiques','➕'],['les sciences','🔬'],['la musique','🎵'],['les arts','🎨'],['l’éducation physique','⚽'],['la géographie','🗺️'],['l’histoire','🏰']]},
+ {id:'sports',t:'Les sports',e:'⚽',col:'mint',w:[['le soccer','⚽'],['le basketball','🏀'],['le hockey','🏒'],['le baseball','⚾'],['le tennis','🎾'],['la natation','🏊'],['le vélo','🚴'],['le ski','⛷️'],['le patin','⛸️'],['le karaté','🥋'],['le golf','⛳'],['le football','🏈']]},
+ {id:'passetemps',t:'Les passe-temps',e:'🎮',col:'grape',w:[['dessiner','🖍️'],['jouer aux cartes','🃏'],['jouer aux échecs','♟️'],['jouer à un jeu vidéo','🎮'],['lire','📖'],['cuisiner','🍳'],['photographier','📷'],['pêcher','🎣'],['jardiner','🌻'],['danser','💃']]},
+ {id:'musique',t:'Les instruments de musique',e:'🎸',col:'pink',w:[['une guitare','🎸'],['un piano','🎹'],['un violon','🎻'],['une trompette','🎺'],['un saxophone','🎷'],['un tambour','🥁'],['une flûte','🪈'],['un micro','🎤']]},
+ {id:'appareils',t:'Les appareils électroniques',e:'📱',col:'orange',w:[['un téléphone','📱'],['un ordinateur','💻'],['une tablette','📲'],['un téléviseur','📺'],['une caméra','📹'],['un appareil photo','📷'],['une radio','📻'],['des écouteurs','🎧']]},
+ {id:'metiers',t:'Les métiers',e:'👷',col:'lime',w:[['un médecin','🧑‍⚕️'],['un enseignant','🧑‍🏫'],['un policier','👮'],['un pompier','🧑‍🚒'],['un cuisinier','🧑‍🍳'],['un fermier','🧑‍🌾'],['un pilote','🧑‍✈️'],['un artiste','🧑‍🎨'],['un astronaute','🧑‍🚀'],['un scientifique','🧑‍🔬'],['un mécanicien','🧑‍🔧'],['un ouvrier','👷']]},
+ {id:'transport',t:'Les moyens de transport',e:'🚌',col:'teal',w:[['une voiture','🚗'],['un autobus','🚌'],['un train','🚆'],['un avion','✈️'],['un bateau','⛵'],['un vélo','🚲'],['une moto','🏍️'],['un camion','🚚'],['un hélicoptère','🚁'],['un taxi','🚕'],['une fusée','🚀'],['un métro','🚇']]},
+ {id:'domestiques',t:'Les animaux domestiques et de la ferme',e:'🐶',col:'coral',w:[['un chien','🐶'],['un chat','🐱'],['un lapin','🐰'],['un hamster','🐹'],['un poisson','🐠'],['un oiseau','🐦'],['une vache','🐄'],['un cochon','🐷'],['un cheval','🐴'],['un mouton','🐑'],['une poule','🐔'],['un canard','🦆']]},
+ {id:'sauvages',t:'Les animaux sauvages',e:'🦁',col:'sky',w:[['un lion','🦁'],['un tigre','🐯'],['un éléphant','🐘'],['une girafe','🦒'],['un singe','🐒'],['un ours','🐻'],['un loup','🐺'],['un renard','🦊'],['un zèbre','🦓'],['un kangourou','🦘'],['un panda','🐼'],['un hibou','🦉']]},
+ {id:'insectes',t:'Les insectes et les animaux aquatiques',e:'🐞',col:'mint',w:[['une coccinelle','🐞'],['un papillon','🦋'],['une abeille','🐝'],['une fourmi','🐜'],['une araignée','🕷️'],['un escargot','🐌'],['une baleine','🐳'],['un dauphin','🐬'],['un requin','🦈'],['une tortue','🐢'],['une pieuvre','🐙'],['un crabe','🦀']]},
+ {id:'ville',t:'La ville',e:'🏙️',col:'grape',w:[['une maison','🏠'],['un magasin','🏪'],['une banque','🏦'],['un hôpital','🏥'],['une église','⛪'],['un parc','🏞️'],['un pont','🌉'],['une gare','🚉'],['un restaurant','🍴'],['un hôtel','🏨'],['une usine','🏭'],['un château','🏰']]},
+ {id:'maison',t:'La maison',e:'🏡',col:'pink',w:[['une cuisine','🍳'],['une chambre','🛏️'],['une salle de bain','🛁'],['un salon','🛋️'],['un lit','🛏️'],['une chaise','🪑'],['une table','🍽️'],['une porte','🚪'],['une fenêtre','🪟'],['une lampe','💡'],['un miroir','🪞'],['une clé','🔑']]},
+ {id:'pays',t:'Les pays',e:'🌍',col:'orange',w:[['le Canada','🇨🇦'],['la France','🇫🇷'],['le Maroc','🇲🇦'],['l’Espagne','🇪🇸'],['l’Italie','🇮🇹'],['les États-Unis','🇺🇸'],['le Brésil','🇧🇷'],['le Japon','🇯🇵'],['l’Égypte','🇪🇬'],['la Chine','🇨🇳'],['l’Allemagne','🇩🇪'],['la Terre','🌍']]},
+ {id:'temps',t:'Le temps',e:'📅',col:'lime',w:[['le matin','🌅'],['l’après-midi','🌞'],['le soir','🌇'],['la nuit','🌙'],['lundi','1️⃣'],['mardi','2️⃣'],['mercredi','3️⃣'],['jeudi','4️⃣'],['vendredi','5️⃣'],['samedi','6️⃣'],['dimanche','7️⃣'],['un calendrier','📅']]},
+ {id:'saisons',t:'Les saisons',e:'🍂',col:'teal',w:[['le printemps','🌷'],['l’été','🏖️'],['l’automne','🍂'],['l’hiver','⛄'],['janvier','❄️'],['avril','🌧️'],['juillet','☀️'],['octobre','🍁'],['décembre','🎄'],['une année','🗓️']]},
+ {id:'nature',t:'La nature',e:'🌳',col:'mint',w:[['un arbre','🌳'],['une fleur','🌸'],['une montagne','⛰️'],['une rivière','🏞️'],['la mer','🌊'],['une plage','🏖️'],['une forêt','🌲'],['un volcan','🌋'],['un désert','🏜️'],['un nuage','☁️'],['une étoile','⭐'],['la lune','🌙']]},
+ {id:'meteo',t:'Le temps qu’il fait',e:'⛅',col:'sky',w:[['le soleil','☀️'],['la pluie','🌧️'],['la neige','❄️'],['le vent','💨'],['un orage','⛈️'],['un nuage','☁️'],['un arc-en-ciel','🌈'],['la brume','🌫️'],['un parapluie','☂️'],['un thermomètre','🌡️']]}
+]);
+var FGROUPS=[
+ ['Moi et les autres',['famille','corps','vetements','couleurs','formes','sentiments','sante']],
+ ['Chiffres et mots',['nombres','contraires','actions','temps','saisons']],
+ ['Manger et boire',['repas','fruits','legumes','viandes','boissons']],
+ ['L’école et les loisirs',['ecole','matieres','sports','passetemps','musique','appareils','fetes']],
+ ['Le monde autour de moi',['domestiques','sauvages','insectes','nature','meteo','metiers','transport','ville','maison','pays']]
+];
+
+/* ---------- communication: situations (fr, ar) ---------- */
+var CS=[
+ {id:'politesse',t:'La politesse',e:'🙏',col:'coral',p:[
+  ['Bonjour !','مرحبًا! (صباح الخير)'],['Bonsoir !','مساء الخير!'],['Salut !','سلام!'],['Au revoir !','إلى اللقاء!'],['À bientôt !','أراك قريبًا!'],['Bonne nuit !','تصبح على خير!'],['S’il te plaît.','من فضلك.'],['Merci beaucoup !','شكرًا جزيلًا!'],['De rien.','عفوًا.'],['Excuse-moi.','المعذرة.'],['Pardon !','آسف!'],['Ce n’est pas grave.','لا بأس.']]},
+ {id:'presenter',t:'Se présenter',e:'👋',col:'sky',p:[
+  ['Comment tu t’appelles ?','ما اسمك؟'],['Je m’appelle Sara.','اسمي سارة.'],['Quel âge as-tu ?','كم عمرك؟'],['J’ai sept ans.','عمري سبع سنوات.'],['Où habites-tu ?','أين تسكن؟'],['J’habite au Maroc.','أسكن في المغرب.'],['Enchanté !','تشرفت بمعرفتك!'],['Comment ça va ?','كيف حالك؟'],['Ça va bien, merci.','أنا بخير، شكرًا.'],['Et toi ?','وأنت؟']]},
+ {id:'famille',t:'Ma famille',e:'👨‍👩‍👧‍👦',col:'mint',p:[
+  ['Voici ma mère.','هذه أمي.'],['Voici mon père.','هذا أبي.'],['J’ai un frère et une sœur.','عندي أخ وأخت.'],['Mon grand-père est gentil.','جدي لطيف.'],['Ma grand-mère cuisine bien.','جدتي تطبخ جيدًا.'],['Nous sommes cinq.','نحن خمسة.'],['Je n’ai pas de frère.','ليس عندي أخ.'],['J’aime ma famille.','أحب عائلتي.']]},
+ {id:'decrire',t:'Décrire une personne',e:'🧑',col:'grape',p:[
+  ['Elle est grande.','هي طويلة.'],['Il est petit.','هو قصير.'],['Il a les cheveux noirs.','شعره أسود.'],['Elle a les yeux bruns.','عيناها بنيتان.'],['Il porte des lunettes.','يضع نظارات.'],['Elle est gentille.','هي لطيفة.'],['Il est drôle.','هو مضحك.'],['Comment est-il ?','كيف يبدو؟']]},
+ {id:'ecole',t:'À l’école',e:'🏫',col:'pink',p:[
+  ['Je suis en retard.','أنا متأخر.'],['Puis-je aller aux toilettes ?','هل يمكنني الذهاب إلى المرحاض؟'],['Je ne comprends pas.','لا أفهم.'],['Peux-tu répéter, s’il te plaît ?','هل يمكنك أن تعيد، من فضلك؟'],['J’ai oublié mon cahier.','نسيت دفتري.'],['Peux-tu m’aider ?','هل يمكنك مساعدتي؟'],['Lève la main.','ارفع يدك.'],['Écoute bien.','استمع جيدًا.'],['Ouvre ton livre.','افتح كتابك.'],['Range tes affaires.','رتب أغراضك.']]},
+ {id:'gouts',t:'Mes goûts',e:'❤️',col:'orange',p:[
+  ['J’aime les fraises.','أحب الفراولة.'],['Je n’aime pas les oignons.','لا أحب البصل.'],['Qu’est-ce que tu aimes ?','ماذا تحب؟'],['Ma couleur préférée est le bleu.','لوني المفضل هو الأزرق.'],['J’adore le chocolat !','أعشق الشوكولاتة!'],['Je préfère le thé.','أفضل الشاي.'],['Moi aussi.','وأنا أيضًا.'],['Pas moi.','أنا لا.']]},
+ {id:'emotions',t:'Mes émotions',e:'😊',col:'lime',p:[
+  ['Je suis content.','أنا سعيد.'],['Je suis triste.','أنا حزين.'],['Je suis fâché.','أنا غاضب.'],['J’ai peur.','أنا خائف.'],['Je suis fatigué.','أنا متعب.'],['J’ai faim.','أنا جائع.'],['J’ai soif.','أنا عطشان.'],['J’ai mal à la tête.','عندي ألم في رأسي.'],['Je ne me sens pas bien.','لا أشعر أنني بخير.']]},
+ {id:'temps',t:'Le temps et l’heure',e:'⏰',col:'teal',p:[
+  ['Quel jour sommes-nous ?','في أي يوم نحن؟'],['Aujourd’hui, c’est lundi.','اليوم هو الاثنين.'],['Quelle heure est-il ?','كم الساعة؟'],['Il est huit heures.','الساعة الثامنة.'],['Demain, je vais à l’école.','غدًا سأذهب إلى المدرسة.'],['Hier, j’ai joué au soccer.','أمس لعبت كرة القدم.'],['Quel temps fait-il ?','كيف الطقس؟'],['Il pleut.','إنها تمطر.'],['Il fait chaud.','الجو حار.'],['Il fait froid.','الجو بارد.']]},
+ {id:'aide',t:'Demander de l’aide',e:'🆘',col:'coral',p:[
+  ['Peux-tu m’aider ?','هل يمكنك مساعدتي؟'],['J’ai besoin d’aide.','أحتاج إلى مساعدة.'],['Veux-tu de l’aide ?','هل تريد مساعدة؟'],['Oui, avec plaisir.','نعم، بكل سرور.'],['Puis-je emprunter ton crayon ?','هل يمكنني استعارة قلمك؟'],['Puis-je jouer avec vous ?','هل يمكنني اللعب معكم؟'],['Fais attention !','انتبه!'],['Au secours !','النجدة!']]},
+ {id:'chemin',t:'Demander son chemin',e:'🧭',col:'sky',p:[
+  ['Où est la banque ?','أين البنك؟'],['Je suis perdu.','لقد ضللت الطريق.'],['Tourne à gauche.','انعطف يسارًا.'],['Tourne à droite.','انعطف يمينًا.'],['Continue tout droit.','تابع مباشرة.'],['C’est loin ?','هل هو بعيد؟'],['C’est tout près.','إنه قريب جدًا.'],['C’est à côté du parc.','إنه بجانب الحديقة.']]},
+ {id:'magasin',t:'Au magasin',e:'🛒',col:'mint',p:[
+  ['Je voudrais une pomme.','أريد تفاحة.'],['Combien ça coûte ?','بكم هذا؟'],['C’est trop cher.','هذا غالٍ جدًا.'],['Avez-vous une autre couleur ?','هل لديكم لونًا آخر؟'],['Je prends celui-ci.','سآخذ هذا.'],['Voici l’argent.','هذه النقود.'],['Voici votre monnaie.','هذه باقي نقودكم.'],['Merci, bonne journée !','شكرًا، يومًا سعيدًا!']]},
+ {id:'restaurant',t:'Au restaurant',e:'🍽️',col:'grape',p:[
+  ['Une table pour deux, s’il vous plaît.','طاولة لشخصين، من فضلكم.'],['Je voudrais le menu.','أريد قائمة الطعام.'],['Qu’est-ce que vous désirez ?','ماذا تريدون؟'],['Je prends une pizza.','سآخذ بيتزا.'],['Et comme boisson ?','وماذا للشرب؟'],['De l’eau, s’il vous plaît.','ماء، من فضلكم.'],['C’était délicieux !','كان لذيذًا!'],['L’addition, s’il vous plaît.','الحساب، من فضلكم.']]},
+ {id:'telephone',t:'Au téléphone',e:'📞',col:'pink',p:[
+  ['Allô ?','ألو؟'],['Je voudrais parler à Karim.','أريد التحدث إلى كريم.'],['C’est Sara à l’appareil.','معك سارة.'],['Un instant, s’il vous plaît.','لحظة، من فضلكم.'],['Il n’est pas là.','هو ليس هنا.'],['Puis-je laisser un message ?','هل يمكنني ترك رسالة؟'],['Je te rappelle plus tard.','سأعاود الاتصال بك لاحقًا.'],['Merci de ton appel.','شكرًا على اتصالك.']]}
+];
+
+/* ---------- grammaire: leçons (partie 1) ---------- */
+var GL=[
+ {id:'articles',t:'Les articles',e:'🔤',col:'coral',ar:'الأداة تأتي قبل الاسم: un/le للمذكر، une/la للمؤنث، des/les للجمع.',
+  rule:['un, une, des : on parle d’une chose en général.','le, la, les : on parle d’une chose précise.','Devant une voyelle : l’école, l’ami.'],
+  ex:[['un chat','un chat'],['une chaise','une chaise'],['des livres','des livres'],['le soleil','le soleil'],['la lune','la lune'],['les étoiles','les étoiles'],['l’école','l’école'],['l’ami','l’ami']],
+  q:[['Article indéfini : ___ chat','un',['une','des','le']],['Article indéfini : ___ chaise','une',['un','des','le']],['Article indéfini : ___ livres','des',['un','une','la']],['Article défini : ___ soleil','le',['la','les','un']],['Article défini : ___ lune','la',['le','les','une']],['Article défini : ___ étoiles','les',['le','la','des']],['Article défini : ___ école','l’',['le','la','les']],['Article indéfini : ___ pomme','une',['un','des','le']],['Article défini : ___ chiens','les',['le','la','un']],['Article indéfini : ___ ballon','un',['une','des','la']]]},
+ {id:'noms',t:'Le nom : féminin et pluriel',e:'📛',col:'sky',ar:'للجمع نضيف غالبًا s. الأسماء المنتهية بـ al تصبح aux، والمنتهية بـ eau تصبح eaux.',
+  rule:['Au pluriel, on ajoute souvent un s : un chat, des chats.','-al devient -aux : un cheval, des chevaux.','-eau devient -eaux : un gâteau, des gâteaux.','Au féminin, on ajoute souvent un e : un ami, une amie.'],
+  ex:[['un chat → des chats','des chats'],['un cheval → des chevaux','des chevaux'],['un gâteau → des gâteaux','des gâteaux'],['un ami → une amie','une amie'],['un lion → une lionne','une lionne'],['un boulanger → une boulangère','une boulangère']],
+  q:[['Pluriel de « un chat »','des chats',['des chat','un chats','les chat']],['Pluriel de « un cheval »','des chevaux',['des chevals','des cheval','un chevaux']],['Pluriel de « un gâteau »','des gâteaux',['des gâteau','des gâteaus','un gâteaux']],['Pluriel de « une pomme »','des pommes',['des pomme','une pommes','les pomme']],['Pluriel de « un journal »','des journaux',['des journals','des journal','un journaux']],['Féminin de « un ami »','une amie',['un amie','une ami','des amie']],['Féminin de « un lion »','une lionne',['une lion','un lionne','une lione']],['Féminin de « un étudiant »','une étudiante',['une étudiant','un étudiante','une étudiants']],['Pluriel de « un oiseau »','des oiseaux',['des oiseau','des oiseals','un oiseaux']],['Pluriel de « une fleur »','des fleurs',['des fleur','une fleurs','les fleur']]]},
+ {id:'adjectifs',t:'Les adjectifs',e:'🌈',col:'mint',ar:'الصفة تتبع الاسم في الجنس والعدد: grand، grande، grands، grandes. وغالبًا تأتي بعد الاسم.',
+  rule:['L’adjectif décrit le nom et se place souvent après lui.','Il s’accorde avec le nom : un chat noir, une chatte noire.','Au pluriel, on ajoute un s : des chats noirs.','Quand il finit par e, il ne change pas au féminin : un livre rouge, une pomme rouge.'],
+  ex:[['un grand garçon','un grand garçon'],['une grande fille','une grande fille'],['des chats noirs','des chats noirs'],['des fleurs jaunes','des fleurs jaunes'],['un ballon rouge','un ballon rouge'],['une pomme rouge','une pomme rouge']],
+  q:[['Une fille ___ (grand)','grande',['grand','grands','grandes']],['Un garçon ___ (petit)','petit',['petite','petits','petites']],['Des chats ___ (noir)','noirs',['noir','noire','noires']],['Des fleurs ___ (jaune)','jaunes',['jaune','jaunee','jaun']],['Une robe ___ (vert)','verte',['vert','verts','vertes']],['Un ballon ___ (rouge)','rouge',['rouges','rougue','rougee']],['Des pommes ___ (rouge)','rouges',['rouge','rougees','rougs']],['Une amie ___ (gentil)','gentille',['gentil','gentils','gentilles']],['Des enfants ___ (content)','contents',['content','contente','contentes']],['Une maison ___ (blanc)','blanche',['blanc','blancs','blanches']]]},
+ {id:'pronoms',t:'Les pronoms personnels',e:'🙋',col:'grape',ar:'الضمائر: je أنا، tu أنت، il هو، elle هي، nous نحن، vous أنتم/حضرتك، ils هم، elles هن.',
+  rule:['je, tu, il, elle : une personne.','nous, vous, ils, elles : plusieurs personnes.','On dit « tu » à un ami et « vous » à un adulte qu’on respecte.','« Ils » parle d’un groupe de garçons ou d’un groupe mixte.'],
+  ex:[['je','je'],['tu','tu'],['il','il'],['elle','elle'],['nous','nous'],['vous','vous'],['ils','ils'],['elles','elles']],
+  q:[['Pour parler de moi : ___','je',['tu','il','nous']],['Pour parler à mon ami : ___','tu',['je','vous','elle']],['Pour parler de Karim : ___','il',['elle','ils','nous']],['Pour parler de Sara : ___','elle',['il','elles','vous']],['Pour parler de toi et moi : ___','nous',['vous','ils','je']],['Pour parler poliment à mon enseignant : ___','vous',['tu','nous','elles']],['Pour parler de deux garçons : ___','ils',['elles','il','nous']],['Pour parler de deux filles : ___','elles',['ils','elle','vous']],['Pour parler de Karim et Sara : ___','ils',['elles','nous','il']],['Pour parler à mes parents avec respect : ___','vous',['tu','je','il']]]},
+ {id:'etreavoir',t:'Être et avoir',e:'⭐',col:'pink',ar:'فعلان مهمان جدًا في الحاضر: être (يكون) وavoir (يملك).',
+  rule:['être : je suis, tu es, il est, nous sommes, vous êtes, ils sont.','avoir : j’ai, tu as, il a, nous avons, vous avez, ils ont.'],
+  ex:[['je suis content','je suis content'],['tu es grand','tu es grand'],['elle est à l’école','elle est à l’école'],['nous sommes amis','nous sommes amis'],['vous êtes en retard','vous êtes en retard'],['ils sont gentils','ils sont gentils'],['j’ai sept ans','j’ai sept ans'],['nous avons faim','nous avons faim']],
+  q:[['Je ___ content.','suis',['es','est','sommes']],['Tu ___ grand.','es',['est','suis','êtes']],['Il ___ à l’école.','est',['es','sont','suis']],['Nous ___ amis.','sommes',['êtes','sont','suis']],['Vous ___ en retard.','êtes',['sommes','es','sont']],['Ils ___ gentils.','sont',['est','sommes','êtes']],['J’___ sept ans.','ai',['as','a','ont']],['Tu ___ un chat.','as',['ai','a','avez']],['Nous ___ faim.','avons',['avez','ont','a']],['Elles ___ deux frères.','ont',['avons','a','avez']]]}
+];
+
+/* ---------- grammaire: leçons (partie 2) ---------- */
+GL=GL.concat([
+ {id:'verbes',t:'Les verbes en -er',e:'🏃',col:'orange',ar:'أفعال المجموعة الأولى تنتهي بـ er. نغيّر النهاية حسب الضمير: e، es، e، ons، ez، ent.',
+  rule:['aimer : j’aime, tu aimes, il aime, nous aimons, vous aimez, ils aiment.','On garde le début du verbe et on change la fin.','Avec manger : nous mangeons (on garde le e).'],
+  ex:[['je joue','je joue'],['tu chantes','tu chantes'],['elle danse','elle danse'],['nous parlons','nous parlons'],['vous regardez','vous regardez'],['ils mangent','ils mangent']],
+  q:[['Je ___ (jouer)','joue',['joues','jouons','jouent']],['Tu ___ (chanter)','chantes',['chante','chantons','chantez']],['Elle ___ (danser)','danse',['danses','dansons','dansent']],['Nous ___ (parler)','parlons',['parlez','parlent','parle']],['Vous ___ (regarder)','regardez',['regardons','regardent','regardes']],['Ils ___ (manger)','mangent',['mangeons','manges','mangez']],['Nous ___ (manger)','mangeons',['mangons','mangez','mangent']],['Il ___ (aimer)','aime',['aimes','aimons','aiment']],['Tu ___ (écouter)','écoutes',['écoute','écoutons','écoutez']],['Elles ___ (dessiner)','dessinent',['dessine','dessinons','dessinez']]]},
+ {id:'interro',t:'Les mots pour poser une question',e:'❓',col:'lime',ar:'كلمات الاستفهام: qui من، où أين، quand متى، comment كيف، pourquoi لماذا، combien كم.',
+  rule:['Qui ? : une personne.','Où ? : un lieu.','Quand ? : le moment.','Comment ? : la façon.','Pourquoi ? : la raison.','Combien ? : la quantité.'],
+  ex:[['Qui est ton ami ?','Qui est ton ami ?'],['Où habites-tu ?','Où habites-tu ?'],['Quand pars-tu ?','Quand pars-tu ?'],['Comment vas-tu ?','Comment vas-tu ?'],['Pourquoi pleures-tu ?','Pourquoi pleures-tu ?'],['Combien ça coûte ?','Combien ça coûte ?']],
+  q:[['___ habites-tu ? — J’habite à Rabat.','Où',['Qui','Quand','Combien']],['___ tu t’appelles ? — Je m’appelle Sara.','Comment',['Où','Pourquoi','Quand']],['___ ça coûte ? — Dix dollars.','Combien',['Qui','Où','Comment']],['___ est ton ami ? — C’est Karim.','Qui',['Où','Quand','Combien']],['___ pars-tu ? — Demain.','Quand',['Où','Qui','Comment']],['___ pleures-tu ? — Parce que je suis triste.','Pourquoi',['Quand','Combien','Où']],['___ vas-tu ? — Ça va bien.','Comment',['Où','Qui','Combien']],['___ vit dans ta maison ? — Ma famille.','Qui',['Où','Quand','Comment']],['___ est la banque ? — Là-bas.','Où',['Qui','Combien','Pourquoi']],['___ de frères as-tu ? — Deux.','Combien',['Comment','Où','Quand']]]},
+ {id:'phrases',t:'La phrase et la ponctuation',e:'✍️',col:'teal',ar:'الجملة تبدأ بحرف كبير وتنتهي بنقطة (.) أو علامة استفهام (?) أو علامة تعجب (!).',
+  rule:['Une phrase commence par une majuscule.','Phrase qui raconte : on met un point (.).','Phrase qui demande : on met un point d’interrogation (?).','Phrase qui exprime une émotion : on met un point d’exclamation (!).'],
+  ex:[['Je mange une pomme.','Je mange une pomme.'],['Tu aimes la pizza ?','Tu aimes la pizza ?'],['Quel beau dessin !','Quel beau dessin !'],['Sara habite à Fès.','Sara habite à Fès.']],
+  q:[['Ponctuation : « Je mange une pomme »','.',['?','!',',']],['Ponctuation : « Tu aimes la pizza »','?',['.','!',',']],['Ponctuation : « Quel beau dessin »','!',['.','?',',']],['Ponctuation : « Où habites-tu »','?',['.','!',',']],['Ponctuation : « Il fait chaud aujourd’hui »','.',['?','!',',']],['Ponctuation : « Bravo, tu as gagné »','!',['.','?',',']],['Une phrase commence par :','une majuscule',['un point','une virgule','un accent']],['Une phrase qui pose une question finit par :','un point d’interrogation',['un point','une virgule','un point d’exclamation']],['Une phrase qui exprime la joie finit souvent par :','un point d’exclamation',['un point','un point d’interrogation','une virgule']],['Quel mot prend une majuscule ?','Sara',['chat','pomme','école']]]},
+ {id:'accents',t:'Les accents',e:'🎩',col:'coral',ar:'الأحرف المنبّرة في الفرنسية: é (aigu)، è (grave)، ê (circonflexe)، ë (tréma)، ç (cédille).',
+  rule:['é : accent aigu (l’élève).','è : accent grave (le père).','ê : accent circonflexe (la fête).','ë : tréma (Noël).','ç : c cédille (un garçon).'],
+  ex:[['l’élève','l’élève'],['le père','le père'],['la fête','la fête'],['Noël','Noël'],['un garçon','un garçon'],['une étoile','une étoile']],
+  q:[['Quel accent dans « élève » (premier e) ?','accent aigu',['accent grave','accent circonflexe','tréma']],['Quel accent dans « père » ?','accent grave',['accent aigu','accent circonflexe','tréma']],['Quel accent dans « fête » ?','accent circonflexe',['accent aigu','accent grave','tréma']],['Quel signe dans « Noël » ?','tréma',['accent aigu','accent grave','cédille']],['Quel signe sous le c dans « garçon » ?','cédille',['tréma','accent aigu','accent grave']],['Complète : une ___toile','é',['è','ê','ë']],['Complète : la m___re','è',['é','ê','ë']],['Complète : la f___te','ê',['é','è','ë']],['Complète : le gar___on','ç',['c','s','é']],['Quel mot est bien écrit ?','été',['ete','èté','êté']]]},
+ {id:'temps',t:'Passé, présent, futur',e:'⏳',col:'sky',ar:'الماضي (hier أمس)، الحاضر (maintenant الآن)، المستقبل (demain غدًا).',
+  rule:['Passé : hier, j’ai mangé une pomme.','Présent : maintenant, je mange une pomme.','Futur : demain, je vais manger une pomme.'],
+  ex:[['Hier, j’ai joué.','Hier, j’ai joué.'],['Maintenant, je joue.','Maintenant, je joue.'],['Demain, je vais jouer.','Demain, je vais jouer.'],['Hier, nous avons chanté.','Hier, nous avons chanté.'],['Demain, nous allons chanter.','Demain, nous allons chanter.']],
+  q:[['Quel temps ? « Hier, j’ai joué. »','passé',['présent','futur','impératif']],['Quel temps ? « Je mange une pomme. »','présent',['passé','futur','impératif']],['Quel temps ? « Demain, je vais jouer. »','futur',['passé','présent','impératif']],['Quel temps ? « Nous avons chanté. »','passé',['présent','futur','impératif']],['Quel temps ? « Ils dansent maintenant. »','présent',['passé','futur','impératif']],['Quel temps ? « Elle va manger. »','futur',['passé','présent','impératif']],['Complète : Hier, j’___ mangé.','ai',['suis','vais','as']],['Complète : Demain, je ___ jouer.','vais',['ai','suis','as']],['Complète : Hier, tu ___ chanté.','as',['vas','es','ai']],['Complète : Demain, nous ___ manger.','allons',['avons','sommes','allez']]]}
+]);
+
+/* ---------- livre français: pages et quiz ---------- */
+var FBY={},ALLW=[];
+FT.forEach(function(t){FBY[t.id]=t;t.w.forEach(function(x){ALLW.push({w:x[0],e:x[1],th:t.id})})});
+function isFrRoute(h){return /^(fr(-|$)|f$|fg\d|ft-|fq-|g$|gl-|gq-|c$|cs-|cq-)/.test(h)}
+function fGroupOf(id){for(var i=0;i<FGROUPS.length;i++)if(FGROUPS[i][1].indexOf(id)>=0)return i+1;return 1}
+function fValid(h){
+  var m;
+  if(gcValid(h))return true;
+  if(h==='f')return true;
+  if((m=h.match(/^fg(\d)$/)))return +m[1]>=1&&+m[1]<=FGROUPS.length;
+  if((m=h.match(/^ft-([a-z]+)$/)))return !!FBY[m[1]];
+  if((m=h.match(/^fq-([a-z0-9]+)$/)))return m[1]==='all'||!!FBY[m[1]]||/^g[1-5]$/.test(m[1]);
+  return false;
+}
+function fParent(h){
+  var m,gp=gcParent(h);
+  if(gp)return gp;
+  if(h==='f')return 'home';
+  if(/^fg\d$/.test(h))return 'f';
+  if((m=h.match(/^ft-([a-z]+)$/)))return 'fg'+fGroupOf(m[1]);
+  return 'f';
+}
+function fPool(key){
+  if(key==='all')return ALLW.slice();
+  var m=key.match(/^g(\d)$/);
+  if(m){var ids=FGROUPS[+m[1]-1][1];return ALLW.filter(function(x){return ids.indexOf(x.th)>=0})}
+  return ALLW.filter(function(x){return x.th===key});
+}
+function fgen(pool){
+  function wrongs(c){
+    var out=[],ws={},es={};ws[c.w]=1;es[c.e]=1;
+    function add(list){shuffle(list).forEach(function(x){if(out.length<3&&!ws[x.w]&&!es[x.e]){ws[x.w]=1;es[x.e]=1;out.push(x)}})}
+    add(pool);add(ALLW);
+    return out;
+  }
+  return function(){
+    var types=['img','word'];if(hasVoice('fr-FR'))types.push('listen');
+    var t=pick(types),c=pick(pool),wr=wrongs(c),rv=c.e+' '+c.w;
+    if(t==='img')return mk({key:'i'+c.w+c.e,text:'Qu’est-ce que c’est ?',big:c.e,bigcls:'emo',correct:{h:c.w,cls:'fw'},wrongs:wr.map(function(x){return {h:x.w,cls:'fw'}}),review:rv});
+    if(t==='word')return mk({key:'w'+c.w+c.e,text:'Trouve l’image du mot :',big:c.w,bigcls:'fwbig',correct:{h:c.e,cls:'emo'},wrongs:wr.map(function(x){return {h:x.e,cls:'emo'}}),review:rv});
+    return mk({key:'l'+c.w+c.e,text:'Écoute et trouve le mot',say:c.w,auto:1,correct:{h:c.w,cls:'fw'},wrongs:wr.map(function(x){return {h:x.w,cls:'fw'}}),review:rv});
+  };
+}
+function fHub(){
+  var cards=FGROUPS.map(function(g,i){
+    var big=g[1].slice(0,3).map(function(id){return FBY[id].e}).join(' ');
+    return card('fg'+(i+1),FBY[g[1][0]].col,big,g[0],'sm lat');
+  });
+  cards.push(card('g','coral','Aa','La grammaire','sm lat'));
+  cards.push(card('c','mint','💬','Communication','sm lat'));
+  cards.push(card('fq-all','ink',I_STAR,'Quiz des mots'));
+  app.innerHTML=head({title:'Le français en images',sub:'Choisis une section',back:1})+'<div class="cards c4">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function fGroup(n){
+  var g=FGROUPS[n-1],cards=g[1].map(function(id){var t=FBY[id];return card('ft-'+id,t.col,t.e,t.t,'sm lat')});
+  cards.push(card('fq-g'+n,'ink',I_STAR,'Quiz du groupe'));
+  app.innerHTML=head({title:g[0],sub:'Choisis un thème',back:1})+'<div class="cards c4">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+var FA={on:false,t:null};
+function fStopAuto(){FA.on=false;clearTimeout(FA.t);var b=document.getElementById('fauto');if(b)b.textContent='Tout lire'}
+function fRunAuto(i){
+  var els=all('.lcard');
+  if(!FA.on||i>=els.length){fStopAuto();return}
+  els.forEach(function(e,k){e.classList.toggle('sel',k===i)});
+  var el=els[i];if(el.scrollIntoView)el.scrollIntoView({block:'nearest'});
+  say(el.getAttribute('data-say'),'fr-FR');
+  FA.t=setTimeout(function(){fRunAuto(i+1)},2200);
+}
+function fTheme(id){
+  var T0=FBY[id],cols=['coral','sky','mint','grape','pink','orange','lime','teal','sun'];
+  app.innerHTML=head({title:T0.t,sub:'Appuie sur une image pour entendre le mot',back:1})+
+   '<div class="row" style="margin-bottom:1rem"><button class="big-btn" data-act="fquiz" data-k="'+id+'">Quiz</button><button class="big-btn alt" data-act="fauto" id="fauto">Tout lire</button></div>'+
+   '<div class="lex">'+T0.w.map(function(x,n){return '<button class="lcard lat c-'+cols[n%cols.length]+'" data-say="'+x[0]+'" data-lang="fr-FR"><span class="we">'+x[1]+'</span><span class="ww">'+x[0]+'</span></button>'}).join('')+'</div>'+
+   '<div class="note" style="text-align:center;margin-top:.8rem">'+voiceNote('fr-FR')+'</div>';
+  focusEl('.lcard');
+}
+function fRender(h){
+  var m;
+  if(gcRender(h))return;
+  if(h==='f')return fHub();
+  if((m=h.match(/^fg(\d)$/)))return fGroup(+m[1]);
+  if((m=h.match(/^ft-([a-z]+)$/)))return fTheme(m[1]);
+  if((m=h.match(/^fq-([a-z0-9]+)$/))){
+    var k=m[1],pool=fPool(k),par=k==='all'?'f':/^g\d$/.test(k)?'fg'+k.charAt(1):'ft-'+k;
+    return startGen(fgen(pool),'fr',par,par);
+  }
+  go('home');
+}
+function fClick(a,t){
+  if(gcClick(a,t))return true;
+  if(a==='fquiz'){go('fq-'+t.getAttribute('data-k'));return true}
+  if(a==='fauto'){if(FA.on){fStopAuto()}else{FA.on=true;t.textContent='Arrêter';fRunAuto(0)}return true}
+  return false;
+}
+
+/* ---------- grammaire et communication: pages et quiz ---------- */
+var GBY={},CBY={},CALL=[];
+GL.forEach(function(l){GBY[l.id]=l});
+CS.forEach(function(s){CBY[s.id]=s;s.p.forEach(function(x){CALL.push({f:x[0],a:x[1],s:s.id})})});
+function gcValid(h){
+  var m;
+  if(h==='g'||h==='c')return true;
+  if((m=h.match(/^gl-([a-z]+)$/)))return !!GBY[m[1]];
+  if((m=h.match(/^gq-([a-z]+)$/)))return m[1]==='all'||!!GBY[m[1]];
+  if((m=h.match(/^cs-([a-z]+)$/)))return !!CBY[m[1]];
+  if((m=h.match(/^cq-([a-z]+)$/)))return m[1]==='all'||!!CBY[m[1]];
+  return false;
+}
+function gcParent(h){
+  if(h==='g'||h==='c')return 'f';
+  if(/^gl-/.test(h))return 'g';
+  if(/^cs-/.test(h))return 'c';
+  return null;
+}
+function gHub(){
+  var cards=GL.map(function(l){return card('gl-'+l.id,l.col,l.e,l.t,'sm lat')});
+  cards.push(card('gq-all','ink',I_STAR,'Quiz général'));
+  app.innerHTML=head({title:'La grammaire',sub:'Choisis une leçon',back:1})+'<div class="cards c4">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function cHub(){
+  var cards=CS.map(function(s){return card('cs-'+s.id,s.col,s.e,s.t,'sm lat')});
+  cards.push(card('cq-all','ink',I_STAR,'Quiz général'));
+  app.innerHTML=head({title:'Communication',sub:'Des phrases utiles, avec leur sens en arabe',back:1})+'<div class="cards c4">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function gLesson(id){
+  var l=GBY[id],cols=['coral','sky','mint','grape','pink','orange','lime','teal'];
+  app.innerHTML=head({title:l.t,back:1})+
+   '<div class="two"><div class="panel"><h2 class="ptitle">La règle</h2>'+
+   '<div class="arx">'+l.ar+'</div>'+l.rule.map(function(x){return '<div class="rl">'+x+'</div>'}).join('')+
+   '<div class="row" style="margin-top:1rem"><button class="big-btn" data-act="gquiz" data-k="'+id+'">Quiz</button></div></div>'+
+   '<div class="panel"><h2 class="ptitle">Exemples</h2><div class="tiles t2">'+
+   l.ex.map(function(x,n){return '<button class="tile lat c-'+cols[n%cols.length]+'" data-say="'+x[1]+'" data-lang="fr-FR">'+x[0]+'</button>'}).join('')+
+   '</div><div class="note" style="text-align:center;margin-top:.6rem">'+voiceNote('fr-FR')+'</div></div></div>';
+  focusEl('.tile');
+}
+function cSituation(id){
+  var s=CBY[id],cols=['coral','sky','mint','grape','pink','orange','lime','teal'];
+  app.innerHTML=head({title:s.t,sub:'Appuie sur une phrase pour l’entendre',back:1})+
+   '<div class="row" style="margin-bottom:1rem"><button class="big-btn" data-act="cquiz" data-k="'+id+'">Quiz</button></div>'+
+   '<div class="pcards">'+s.p.map(function(x,n){return '<button class="pcard c-'+cols[n%cols.length]+'" data-say="'+x[0]+'" data-lang="fr-FR"><span class="pf">'+x[0]+'</span><span class="pa">'+x[1]+'</span></button>'}).join('')+'</div>'+
+   '<div class="note" style="text-align:center;margin-top:.8rem">'+voiceNote('fr-FR')+'</div>';
+  focusEl('.pcard');
+}
+function ggen(ids){
+  var pool=[];
+  ids.forEach(function(id){GBY[id].q.forEach(function(q){pool.push(q)})});
+  return function(){
+    var q=pick(pool),opts=[q[1]].concat(q[2]);
+    return mk({key:'g'+q[0],text:q[0],correct:{h:q[1],cls:'fw'},wrongs:q[2].map(function(x){return {h:x,cls:'fw'}}),review:q[0].replace('___',q[1])});
+  };
+}
+function cgen(ids){
+  var pool=CALL.filter(function(x){return ids.indexOf(x.s)>=0});
+  function wr(c){
+    var out=[],seen={};seen[c.f]=1;
+    function add(list){shuffle(list).forEach(function(x){if(out.length<3&&!seen[x.f]&&x.a!==c.a){seen[x.f]=1;out.push(x)}})}
+    add(CALL.filter(function(x){return x.s===c.s}));add(CALL);
+    return out;
+  }
+  return function(){
+    var types=['f2a','a2f'];if(hasVoice('fr-FR'))types.push('listen');
+    var t=pick(types),c=pick(pool),w=wr(c);
+    if(t==='f2a')return mk({key:'a'+c.f,text:'Que veut dire cette phrase ?',big:c.f,bigcls:'fwmid',correct:{h:c.a,cls:'aw'},wrongs:w.map(function(x){return {h:x.a,cls:'aw'}}),review:c.f});
+    if(t==='a2f')return mk({key:'b'+c.f,text:'Quelle phrase veut dire :',big:c.a,bigcls:'awbig',correct:{h:c.f,cls:'fw'},wrongs:w.map(function(x){return {h:x.f,cls:'fw'}}),review:c.f});
+    return mk({key:'c'+c.f,text:'Écoute et trouve le sens',say:c.f,auto:1,correct:{h:c.a,cls:'aw'},wrongs:w.map(function(x){return {h:x.a,cls:'aw'}}),review:c.f});
+  };
+}
+function gcRender(h){
+  var m;
+  if(h==='g'){gHub();return true}
+  if(h==='c'){cHub();return true}
+  if((m=h.match(/^gl-([a-z]+)$/))){gLesson(m[1]);return true}
+  if((m=h.match(/^cs-([a-z]+)$/))){cSituation(m[1]);return true}
+  if((m=h.match(/^gq-([a-z]+)$/))){var ids=m[1]==='all'?GL.map(function(l){return l.id}):[m[1]],par=m[1]==='all'?'g':'gl-'+m[1];startGen(ggen(ids),'fr',par,par);return true}
+  if((m=h.match(/^cq-([a-z]+)$/))){var ids2=m[1]==='all'?CS.map(function(s){return s.id}):[m[1]],par2=m[1]==='all'?'c':'cs-'+m[1];startGen(cgen(ids2),'fr',par2,par2);return true}
+  return false;
+}
+function gcClick(a,t){
+  if(a==='gquiz'){go('gq-'+t.getAttribute('data-k'));return true}
+  if(a==='cquiz'){go('cq-'+t.getAttribute('data-k'));return true}
+  return false;
+}
+
+/* ---------- math: data ---------- */
+var NW=['صفر','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة'];
+var MEM=['🍎','⭐','🐟','🎈','🍓','🐥','🌸','⚽'];
+var MCOL=['coral','sky','mint','grape','pink','orange','lime','teal','sun'];
+var MWEEKS=[
+ {n:1,col:'mint',e:'1️⃣',ls:[1,2,3,4]},{n:2,col:'orange',e:'2️⃣',ls:[5,6,7,8]},
+ {n:3,col:'sky',e:'3️⃣',ls:[9,10,11,12]},{n:4,col:'pink',e:'4️⃣',ls:[13,14,15,16]},
+ {n:5,col:'lime',e:'5️⃣',ls:[17,18,19,20]},{n:6,col:'grape',e:'6️⃣',ls:[]}
+];
+var MWN=['الأول','الثاني','الثالث','الرابع','الخامس','السادس'];
+var ML=[null,
+ {t:'عدّ عناصر مجموعة من 1 إلى 5',e:'🍎',ty:'count',a:[1,5],tx:['أعدّ الأشياء واحدًا واحدًا، وآخر عدد أقوله هو عدد العناصر.','أستطيع أيضًا أن أمثّل العدد بأصابعي.']},
+ {t:'قراءة وكتابة الأعداد من 1 إلى 5',e:'✍️',ty:'read',a:[1,5],tx:['كل عدد له رقم وله اسم.','أنظر إلى الرقم، وأقرأ اسمه، وأعدّ النقاط تحته.']},
+ {t:'تفكيك العددين 2 و3',e:'✂️',ty:'dec',a:[2,3],tx:['تفكيك العدد معناه أن أقسمه إلى جزأين.','مثال: 3 يمكن أن يكون 1 و2 معًا.']},
+ {t:'تفكيك العددين 4 و5',e:'🧩',ty:'dec',a:[4,5],tx:['نفكك العدد بطرق مختلفة.','مثال: 5 يكون 2 و3، أو 1 و4.']},
+ {t:'عدّ وتعداد عناصر مجموعة من 1 إلى 9',e:'🍓',ty:'count',a:[1,9],tx:['أعدّ بهدوء ولا أنسى أي عنصر ولا أعدّه مرتين.','أضع إشارة على ما عددته.']},
+ {t:'قراءة وكتابة الأعداد من 1 إلى 9',e:'📖',ty:'read',a:[1,9],tx:['أقرأ العدد وأربطه بالمجموعة التي تناسبه.']},
+ {t:'العددان 0 و10',e:'🔟',ty:'read',a:[0,10],tx:['صفر يعني لا يوجد شيء.','عشرة هو عدد أصابع يديّ كلها.']},
+ {t:'مقارنة عدد عناصر مجموعات',e:'⚖️',ty:'cmpset',a:[1,9],tx:['المجموعة التي فيها عناصر أكثر نقول عنها: أكثر من.','والتي فيها عناصر أقل نقول: أقل من.','وإذا كانت العناصر متساوية نقول: بقدر.']},
+ {t:'تفكيك العدد 6',e:'6️⃣',ty:'dec',a:[6,6],tx:['أبحث عن كل الطرق لأقسم 6 إلى جزأين.']},
+ {t:'تفكيك العدد 7',e:'7️⃣',ty:'dec',a:[7,7],tx:['أبحث عن كل الطرق لأقسم 7 إلى جزأين.']},
+ {t:'تفكيك العدد 8',e:'8️⃣',ty:'dec',a:[8,8],tx:['أبحث عن كل الطرق لأقسم 8 إلى جزأين.']},
+ {t:'تفكيك العدد 9',e:'9️⃣',ty:'dec',a:[9,9],tx:['أبحث عن كل الطرق لأقسم 9 إلى جزأين.']},
+ {t:'تفكيك العدد 10',e:'🔟',ty:'dec',a:[10,10],tx:['10 يمكن أن يكون 5 و5، أو 3 و7، أو 1 و9.']},
+ {t:'مقارنة الأعداد من 0 إلى 10',e:'↔️',ty:'cmp',a:[0,10],tx:['الرمز > معناه أكبر من، والرمز < معناه أصغر من، والرمز = معناه يساوي.','فم الرمز المفتوح يتجه نحو العدد الأكبر.']},
+ {t:'تأطير الأعداد من 0 إلى 10',e:'🖼️',ty:'brk',a:[0,10],tx:['تأطير العدد معناه أن أجد العدد الذي قبله والعدد الذي بعده.','مثال: 4 بين 3 و5، أكتب 3 < 4 < 5.']},
+ {t:'ترتيب الأعداد من 0 إلى 10',e:'📶',ty:'ord',a:[0,10],tx:['ترتيب تصاعدي: من الأصغر إلى الأكبر.','ترتيب تنازلي: من الأكبر إلى الأصغر.']},
+ {t:'التموضع في المكان (1)',e:'📦',ty:'pos1',a:[0,0],tx:['كلمات تصف مكان الشيء: داخل، خارج، على، فوق، تحت.']},
+ {t:'التموضع في المكان (2)',e:'🧭',ty:'pos2',a:[0,0],tx:['كلمات أخرى: أمام، وراء، بين، على يمين، على يسار.','اليمين واليسار يكونان من جهتي أنا وأنا أنظر إلى الشاشة.']},
+ {t:'موضعة أشياء على خانات شبكة',e:'🔲',ty:'cell',a:[0,0],tx:['الخانة هي المربع. أسميها بحرف العمود ثم رقم الصف.','العمود: أ ب ج د من اليسار. الصف: 1 2 3 من الأعلى.','(هذه طريقة التسمية في هذا الموقع، وقد تختلف عن كتابك. اتبع معلمك.)']},
+ {t:'موضعة أشياء على عقد شبكة',e:'📍',ty:'node',a:[0,0],tx:['العقدة هي النقطة التي يتقاطع عندها خطّان.','أسميها برقمين: كم أتحرك يمينًا، ثم كم أتحرك للأعلى، ابتداءً من الزاوية السفلية اليسرى.','(هذه طريقة التسمية في هذا الموقع، وقد تختلف عن كتابك.)']}
+];
+var MOBJ=[['العدّ والتعداد','أعدّ مجموعات من 0 إلى 10 وأمثّلها بالأصابع.'],['قراءة الأعداد وكتابتها','أقرأ وأكتب الأعداد من 0 إلى 10 بالأرقام.'],['التفكيك','أفكك الأعداد من 2 إلى 10.'],['المقارنة','أقارن بعبارات: أقل من، أكثر من، بقدر.'],['الرموز والترتيب','أقارن وأؤطر وأرتب الأعداد بالرموز < > =.'],['المكان','داخل، خارج، فوق، تحت، أمام، وراء، بين، يمين، يسار.'],['الشبكات','أموضع أشياء على خانات وعقد شبكة.']];
+function mw(n){return NW[n]}
+function mrep(e,n){var s='';for(var i=0;i<n;i++)s+=e;return s}
+function mri(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function mdig(n){return '<span dir="ltr">'+n+'</span>'}
+function mnums(lo,hi){var r=[];for(var i=lo;i<=hi;i++)r.push(i);return r}
+function mwrongs(c,lo,hi,fmt){var p=mnums(lo,hi).filter(function(x){return x!==c});if(p.length<3)p=mnums(0,10).filter(function(x){return x!==c});p=shuffle(p);return p.slice(0,3).map(function(x){return {h:fmt(x),cls:'emo'}})}
+function mweekOf(l){return Math.ceil(l/4)}
+/* ---------- math: scenes and quiz generators ---------- */
+function mesc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function mgrp(e,n){if(n===0)return '<span class="mzero">🫙</span>';var o='';for(var i=0;i<n;i++){o+=e;if(i%5===4&&i<n-1)o+='<br>'}return '<span class="mgrp">'+o+'</span>'}
+function mbox(c){return '<span class="mbox">'+(c||'')+'</span>'}
+function mscene(rel,o){
+  if(rel==='in')return '<span class="msc">'+mbox(o)+'</span>';
+  if(rel==='out')return '<span class="msc">'+o+mbox()+'</span>';
+  if(rel==='above')return '<span class="msc col">'+o+mbox()+'</span>';
+  return '<span class="msc col">'+mbox()+o+'</span>';
+}
+function mrow(a){return '<span class="msc">'+a.join('')+'</span>'}
+var MCL=['أ','ب','ج','د'];
+function mcellName(c,r){return 'العمود '+MCL[c]+' / الصف '+(r+1)}
+function mnodeName(x,y){return '<span dir="ltr">( '+x+' , '+y+' )</span>'}
+function msvg(kind,mark,all){
+  var C=4,R=3,u=56,p=34,w,h,o='',i,j;
+  if(kind==='cell'){
+    w=C*u+p+8;h=R*u+p+8;
+    for(i=0;i<C;i++)o+='<text x="'+(p+i*u+u/2)+'" y="22" text-anchor="middle" class="mt1s">'+MCL[i]+'</text>';
+    for(j=0;j<R;j++)o+='<text x="16" y="'+(p+j*u+u/2+9)+'" text-anchor="middle" class="mt1s">'+(j+1)+'</text>';
+    for(i=0;i<C;i++)for(j=0;j<R;j++)o+='<rect x="'+(p+i*u)+'" y="'+(p+j*u)+'" width="'+u+'" height="'+u+'" class="gc'+(mark&&mark.hl&&mark.c===i&&mark.r===j?' hl':'')+'"/>';
+    (all||[mark]).forEach(function(m){if(m&&m.e)o+='<text x="'+(p+m.c*u+u/2)+'" y="'+(p+m.r*u+u/2+11)+'" text-anchor="middle" class="ge">'+m.e+'</text>'});
+  }else{
+    var NC=4,NR=4;w=(NC-1)*u+p*2+8;h=(NR-1)*u+p*2+8;
+    for(i=0;i<NC;i++)o+='<line x1="'+(p+i*u)+'" y1="'+p+'" x2="'+(p+i*u)+'" y2="'+(p+(NR-1)*u)+'" class="gl"/>';
+    for(j=0;j<NR;j++)o+='<line x1="'+p+'" y1="'+(p+j*u)+'" x2="'+(p+(NC-1)*u)+'" y2="'+(p+j*u)+'" class="gl"/>';
+    for(i=0;i<NC;i++)o+='<text x="'+(p+i*u)+'" y="'+(h-6)+'" text-anchor="middle" class="mt1s">'+i+'</text>';
+    for(j=0;j<NR;j++)o+='<text x="12" y="'+(p+(NR-1-j)*u+9)+'" text-anchor="middle" class="mt1s">'+j+'</text>';
+    for(i=0;i<NC;i++)for(j=0;j<NR;j++)o+='<circle cx="'+(p+i*u)+'" cy="'+(p+(NR-1-j)*u)+'" r="'+(mark&&mark.hl&&mark.c===i&&mark.r===j?11:5)+'" class="gn'+(mark&&mark.hl&&mark.c===i&&mark.r===j?' hl':'')+'"/>';
+    (all||[mark]).forEach(function(m){if(m&&m.e)o+='<text x="'+(p+m.c*u)+'" y="'+(p+(NR-1-m.r)*u+9)+'" text-anchor="middle" class="ge">'+m.e+'</text>'});
+  }
+  return '<svg class="msvg" viewBox="0 0 '+w+' '+h+'" aria-hidden="true">'+o+'</svg>';
+}
+var MPOS_OBJ=['🐱','⚽','🐦','🍎','🧸','🐶','⭐','🚗'];
+var MQ={
+ count:function(a){
+   var n=mri(a[0],a[1]),f=Math.random()<.6,e=pick(MEM);
+   if(f)return mk({key:'c1'+n+e,text:'كم عدد العناصر؟',big:mgrp(e,n),bigcls:'emo',correct:{h:mdig(n),cls:'emo'},wrongs:mwrongs(n,a[0],a[1],mdig),review:mrep(e,n)+' = '+n});
+   var ws=shuffle(mnums(a[0],a[1]).filter(function(x){return x!==n})).slice(0,3);
+   return mk({key:'c2'+n+e,text:'أي مجموعة فيها '+NW[n]+' عناصر؟',big:mdig(n),bigcls:'emo',correct:{h:mgrp(e,n),cls:'emo mo'},wrongs:ws.map(function(x){return {h:mgrp(e,x),cls:'emo mo'}}),review:mrep(e,n)+' = '+n});
+ },
+ read:function(a){
+   var n=mri(a[0],a[1]),f=pick([0,1,2]),e=pick(MEM),ws=shuffle(mnums(a[0],a[1]).filter(function(x){return x!==n})).slice(0,3);
+   if(ws.length<3)ws=mwrongs(n,0,10,function(x){return x}).map(function(x){return x.h});
+   var rv=n+' = '+NW[n];
+   if(f===0)return mk({key:'r0'+n,text:'ما اسم هذا الرقم؟',big:mdig(n),bigcls:'emo',correct:{h:NW[n],cls:''},wrongs:ws.map(function(x){return {h:NW[x],cls:''}}),review:rv});
+   if(f===1)return mk({key:'r1'+n,text:'أي رقم يوافق هذه الكلمة؟',big:NW[n],bigcls:'ar',correct:{h:mdig(n),cls:'emo'},wrongs:ws.map(function(x){return {h:mdig(x),cls:'emo'}}),review:rv});
+   return mk({key:'r2'+n+e,text:'ما الرقم المناسب لهذه المجموعة؟',big:mgrp(e,n),bigcls:'emo',correct:{h:mdig(n),cls:'emo'},wrongs:ws.map(function(x){return {h:mdig(x),cls:'emo'}}),review:rv});
+ },
+ dec:function(a){
+   var n=mri(a[0],a[1]),x=mri(1,n-1),y=n-x,i;
+   if(Math.random()<.6){
+     var ws=shuffle(mnums(0,Math.max(n,5)).filter(function(v){return v!==y})).slice(0,3);
+     return mk({key:'d1'+n+'_'+x,text:'أكمل التفكيك:',big:'<span dir="ltr">'+n+' = '+x+' + ؟</span>',bigcls:'emo',correct:{h:mdig(y),cls:'emo'},wrongs:ws.map(function(v){return {h:mdig(v),cls:'emo'}}),review:n+' = '+x+' + '+y});
+   }
+   var ws2=[],seen={};seen[x+'+'+y]=1;seen[y+'+'+x]=1;var g=0;
+   while(ws2.length<3&&g++<200){var p=mri(0,n),q=mri(1,n),t=p+q;if(t===n||p+'+'+q in seen)continue;seen[p+'+'+q]=1;ws2.push({h:'<span dir="ltr">'+p+' + '+q+'</span>',cls:'emo'})}
+   return mk({key:'d2'+n+'_'+x,text:'أي تفكيك صحيح للعدد '+n+'؟',big:mdig(n),bigcls:'emo',correct:{h:'<span dir="ltr">'+x+' + '+y+'</span>',cls:'emo'},wrongs:ws2,review:n+' = '+x+' + '+y});
+ },
+ cmpset:function(a){
+   var A=mri(1,9),B=Math.random()<.25?A:mri(1,9),e1=pick(MEM),e2=pick(MEM.filter(function(z){return z!==e1}));
+   var ans=A>B?'الأولى أكثر':A<B?'الأولى أقل':'بقدر';
+   return mk({key:'s'+A+'_'+B+e1+e2,text:'قارن المجموعة الأولى بالثانية',big:mgrp(e1,A)+'<span class="mvs">|</span>'+mgrp(e2,B),bigcls:'emo mpair',correct:{h:ans,cls:''},wrongs:['الأولى أكثر','الأولى أقل','بقدر','لا يمكن المقارنة'].filter(function(x){return x!==ans}).map(function(x){return {h:x,cls:''}}),review:A+' و '+B});
+ },
+ cmp:function(a){
+   var A=mri(0,10),B=Math.random()<.2?A:mri(0,10),f=pick([0,1,2]),sy=A>B?'&gt;':A<B?'&lt;':'=';
+   if(f===0||(f===1&&(A<3||A>9))||(f===2&&(A<1||A>8)))return mk({key:'m0'+A+'_'+B,text:'ضع الرمز المناسب:',big:'<span dir="ltr">'+A+' ؟ '+B+'</span>',bigcls:'emo',correct:{h:sy,cls:'emo'},wrongs:['&gt;','&lt;','=','≠'].filter(function(x){return x!==sy}).map(function(x){return {h:x,cls:'emo'}}),review:A+' '+sy+' '+B});
+   if(f===1){var ws=shuffle(mnums(0,A).filter(function(x){return x<=A})).slice(0,3),c=mri(A+1,10);return mk({key:'m1'+A+'_'+c,text:'أي عدد أكبر من '+A+'؟',big:mdig(A),bigcls:'emo',correct:{h:mdig(c),cls:'emo'},wrongs:ws.map(function(x){return {h:mdig(x),cls:'emo'}}),review:c+' > '+A});}
+   var ws3=shuffle(mnums(A,10)).slice(0,3),c3=mri(0,A-1);return mk({key:'m2'+A+'_'+c3,text:'أي عدد أصغر من '+A+'؟',big:mdig(A),bigcls:'emo',correct:{h:mdig(c3),cls:'emo'},wrongs:ws3.map(function(x){return {h:mdig(x),cls:'emo'}}),review:c3+' < '+A});
+ },
+ brk:function(a){
+   var n=mri(1,9),f=pick([0,1,2]);
+   if(f===0)return mk({key:'b0'+n,text:'أي عدد يوضع في الإطار؟',big:'<span dir="ltr">'+(n-1)+' &lt; ؟ &lt; '+(n+1)+'</span>',bigcls:'emo',correct:{h:mdig(n),cls:'emo'},wrongs:mwrongs(n,0,10,mdig),review:(n-1)+' < '+n+' < '+(n+1)});
+   if(f===1){var m=mri(0,9),ws=mwrongs(m+1,0,10,mdig);return mk({key:'b1'+m,text:'ما العدد الذي يأتي بعد '+m+'؟',big:mdig(m),bigcls:'emo',correct:{h:mdig(m+1),cls:'emo'},wrongs:ws,review:'بعد '+m+' يأتي '+(m+1)});}
+   var k=mri(1,10);return mk({key:'b2'+k,text:'ما العدد الذي يأتي قبل '+k+'؟',big:mdig(k),bigcls:'emo',correct:{h:mdig(k-1),cls:'emo'},wrongs:mwrongs(k-1,0,10,mdig),review:'قبل '+k+' يأتي '+(k-1)});
+ },
+ ord:function(a){
+   var f=pick([0,1,2]),i;
+   if(f===0){
+     var s=shuffle(mnums(0,10)).slice(0,3),mn=Math.min.apply(null,s),mxv=Math.max.apply(null,s),small=Math.random()<.5,c=small?mn:mxv;
+     var extra=shuffle(mnums(0,10).filter(function(x){return s.indexOf(x)<0&&(small?x>mn:x<mxv)}))[0];
+     var os=s.filter(function(x){return x!==c}).concat([extra]);
+     return mk({key:'o0'+s.join('')+small,text:small?'ما هو العدد الأصغر في هذه الأعداد؟':'ما هو العدد الأكبر في هذه الأعداد؟',big:'<span dir="ltr">'+s.join(' ، ')+'</span>',bigcls:'emo',correct:{h:mdig(c),cls:'emo'},wrongs:os.map(function(x){return {h:mdig(x),cls:'emo'}}),review:small?'الأصغر '+c:'الأكبر '+c});
+   }
+   if(f===1){
+     var st=mri(0,6),sq=[st,st+mri(1,2)];sq.push(sq[1]+mri(1,2));if(sq[2]>10){sq=[0,2,4]}sq.push(Math.min(10,sq[2]+mri(1,2)));if(sq[3]<=sq[2]){sq=[1,3,5,7]}
+     var hi=mri(1,2),cc=sq[hi],ws=shuffle(mnums(0,10).filter(function(x){return !(x>sq[hi-1]&&x<sq[hi+1])})).slice(0,3);
+     var show=sq.map(function(x,k){return k===hi?'؟':x});
+     return mk({key:'o1'+sq.join(''),text:'أكمل الترتيب من الأصغر إلى الأكبر:',big:'<span dir="ltr">'+show.join(' ، ')+'</span>',bigcls:'emo',correct:{h:mdig(cc),cls:'emo'},wrongs:ws.map(function(x){return {h:mdig(x),cls:'emo'}}),review:sq.join(' < ')});
+   }
+   var t=shuffle(mnums(0,10)).slice(0,4),sorted=t.slice().sort(function(x,y){return x-y}),desc=Math.random()<.5;
+   if(desc)sorted.reverse();
+   var fmtq=function(arr){return '<span dir="ltr">'+arr.join(' ، ')+'</span>'},wl=[],sk={};sk[sorted.join()]=1;var g=0;
+   while(wl.length<3&&g++<100){var sh=shuffle(t);if(sk[sh.join()])continue;sk[sh.join()]=1;wl.push({h:fmtq(sh),cls:'emo mo'})}
+   return mk({key:'o2'+t.join('')+desc,text:desc?'أي ترتيب صحيح من الأكبر إلى الأصغر؟':'أي ترتيب صحيح من الأصغر إلى الأكبر؟',big:'',correct:{h:fmtq(sorted),cls:'emo mo'},wrongs:wl,review:sorted.join(desc?' > ':' < ')});
+ },
+ pos1:function(){
+   var o=pick(MPOS_OBJ),rel=pick(['in','out','above','below']),nm={in:'داخل',out:'خارج',above:'فوق',below:'تحت'};
+   return mk({key:'p1'+rel+o,text:'أين '+o+' بالنسبة إلى المربع؟',big:mscene(rel,o),bigcls:'emo',correct:{h:nm[rel],cls:''},wrongs:Object.keys(nm).filter(function(k){return k!==rel}).map(function(k){return {h:nm[k],cls:''}}),review:o+' '+nm[rel]});
+ },
+ pos2:function(){
+   var es=shuffle(['🐱','🐶','🐰','🐻','🐼','🦊','🐸']).slice(0,6),r=es.slice(0,3),x=es.slice(3),f=pick(['r','l','b','f','k']);
+   function opts(c,pool){var o=shuffle(pool.filter(function(z){return z!==c})).slice(0,3);return o}
+   var A=r[0],B=r[1],C=r[2],mp=function(z){return {h:z,cls:'emo'}};
+   if(f==='r')return mk({key:'q'+f+r.join(''),text:'ما الذي على يمين '+B+' ؟',big:mrow(r),bigcls:'emo',correct:mp(C),wrongs:opts(C,[A].concat(x)).map(mp),review:C+' على يمين '+B});
+   if(f==='l')return mk({key:'q'+f+r.join(''),text:'ما الذي على يسار '+B+' ؟',big:mrow(r),bigcls:'emo',correct:mp(A),wrongs:opts(A,[C].concat(x)).map(mp),review:A+' على يسار '+B});
+   if(f==='b')return mk({key:'q'+f+r.join(''),text:'ما الذي بين '+A+' و '+C+' ؟',big:mrow(r),bigcls:'emo',correct:mp(B),wrongs:opts(B,[A,C].concat(x)).map(mp),review:B+' بين '+A+' و '+C});
+   var row=mrow(['🏁'].concat(r));
+   if(f==='f')return mk({key:'q'+f+r.join(''),text:'الجميع يسير نحو العلم 🏁. من الذي أمام '+B+' ؟',big:row,bigcls:'emo',correct:mp(A),wrongs:opts(A,[C].concat(x)).map(mp),review:A+' أمام '+B});
+   return mk({key:'q'+f+r.join(''),text:'الجميع يسير نحو العلم 🏁. من الذي وراء '+B+' ؟',big:row,bigcls:'emo',correct:mp(C),wrongs:opts(C,[A].concat(x)).map(mp),review:C+' وراء '+B});
+ },
+ cell:function(){
+   var c=mri(0,3),r=mri(0,2),e=pick(MEM),f=Math.random()<.5;
+   var ws=[],sk={};sk[c+','+r]=1;var g=0;
+   while(ws.length<3&&g++<100){var cc=mri(0,3),rr=mri(0,2);if(sk[cc+','+rr])continue;sk[cc+','+rr]=1;ws.push(mcellName(cc,rr))}
+   return mk({key:'g'+f+c+r+e,text:f?'أين يوجد '+e+' ؟':'ما اسم الخانة الملوّنة؟',big:msvg('cell',f?{c:c,r:r,e:e}:{c:c,r:r,hl:1}),bigcls:'',correct:{h:mcellName(c,r),cls:'sm'},wrongs:ws.map(function(x){return {h:x,cls:'sm'}}),review:mcellName(c,r)});
+ },
+ node:function(){
+   var c=mri(0,3),r=mri(0,3),e=pick(MEM),f=Math.random()<.5;
+   var ws=[],sk={};sk[c+','+r]=1;var g=0;
+   if(c!==r){sk[r+','+c]=1;ws.push(mnodeName(r,c))}
+   while(ws.length<3&&g++<100){var cc=mri(0,3),rr=mri(0,3);if(sk[cc+','+rr])continue;sk[cc+','+rr]=1;ws.push(mnodeName(cc,rr))}
+   return mk({key:'n'+f+c+r+e,text:f?'أين يوجد '+e+' ؟ (يمينًا ثم للأعلى)':'ما اسم العقدة الكبيرة؟ (يمينًا ثم للأعلى)',big:msvg('node',f?{c:c,r:r,e:e}:{c:c,r:r,hl:1}),bigcls:'',correct:{h:mnodeName(c,r),cls:'emo'},wrongs:ws.map(function(x){return {h:x,cls:'emo'}}),review:'( '+c+' , '+r+' )'});
+ }
+};
+function mgen(lessons){return function(){var l=pick(lessons),d=ML[l];return MQ[d.ty==='cmpset'?'cmpset':d.ty](d.a)}}
+/* ---------- math: pages ---------- */
+function isMRoute(h){return /^(mt|mw-\d|ml-\d+|mq-[a-z0-9]+)$/.test(h)}
+function mValid(h){var m;if(h==='mt')return true;if((m=h.match(/^mw-(\d)$/)))return +m[1]>=1&&+m[1]<=6;if((m=h.match(/^ml-(\d+)$/)))return +m[1]>=1&&+m[1]<=20;if((m=h.match(/^mq-(all|w[1-6]|l\d+)$/))){var k=m[1];return k==='all'||k.charAt(0)==='w'||(+k.slice(1)>=1&&+k.slice(1)<=20)}return false}
+function mParent(h){var m;if(h==='mt')return 'home';if((m=h.match(/^mw-/)))return 'mt';if((m=h.match(/^ml-(\d+)$/)))return 'mw-'+mweekOf(+m[1]);if(h==='mq-all')return 'mt';if((m=h.match(/^mq-w(\d)$/)))return 'mw-'+m[1];if((m=h.match(/^mq-l(\d+)$/)))return 'ml-'+m[1];return 'mt'}
+function mHub(){
+  var cards=MWEEKS.map(function(w){return card('mw-'+w.n,w.col,w.e,'الأسبوع '+MWN[w.n-1],'sm')});
+  cards.push(card('mq-all','ink',I_STAR,'اختبار المرحلة'));
+  app.innerHTML=head({title:'الرياضيات',sub:'المرحلة الأولى: اختر أسبوعًا',back:1})+'<div class="cards c4">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function mWeek(n){
+  var w=MWEEKS[n-1],cards=w.ls.map(function(l){return card('ml-'+l,MCOL[(l-1)%8],ML[l].e,'الدرس '+l+': '+ML[l].t,'sm')});
+  cards.push(card('mq-w'+n,'ink',I_STAR,n===6?'مراجعة المرحلة':'مراجعة الأسبوع'));
+  app.innerHTML=head({title:'الأسبوع '+MWN[n-1],sub:n===6?'راجع ما تعلمته في المرحلة':'اختر درسًا',back:1})+'<div class="cards c3">'+cards.join('')+'</div>';
+  focusEl(null);
+}
+function mExamples(l){
+  var d=ML[l],t=[],i,x;
+  if(d.ty==='count'||d.ty==='read'){for(i=Math.max(d.a[0],0);i<=Math.min(d.a[1],10);i++)t.push([mgrp(MEM[i%8],i)+'<small>'+i+' - '+NW[i]+'</small>',NW[i]])}
+  else if(d.ty==='dec'){for(x=1;x<d.a[0];x++){if(x>d.a[0]-x&&d.a[0]>3)break;t.push(['<span dir="ltr">'+d.a[0]+' = '+x+' + '+(d.a[0]-x)+'</span>',d.a[0]+' يساوي '+x+' زائد '+(d.a[0]-x)])}}
+  else if(d.ty==='cmpset'){t=[[mgrp('🍎',5)+'<span class="mvs">|</span>'+mgrp('🍓',3)+'<small>الأولى أكثر من الثانية</small>','الأولى أكثر من الثانية'],[mgrp('🍎',2)+'<span class="mvs">|</span>'+mgrp('🍓',4)+'<small>الأولى أقل من الثانية</small>','الأولى أقل من الثانية'],[mgrp('🍎',3)+'<span class="mvs">|</span>'+mgrp('🍓',3)+'<small>بقدر</small>','بقدر']]}
+  else if(d.ty==='cmp'){t=[['<span dir="ltr">7 &gt; 4</span>','سبعة أكبر من أربعة'],['<span dir="ltr">2 &lt; 9</span>','اثنان أصغر من تسعة'],['<span dir="ltr">5 = 5</span>','خمسة يساوي خمسة'],['<span dir="ltr">0 &lt; 1</span>','صفر أصغر من واحد']]}
+  else if(d.ty==='brk'){t=[['<span dir="ltr">3 &lt; 4 &lt; 5</span>','أربعة بين ثلاثة وخمسة'],['<span dir="ltr">6 &lt; 7 &lt; 8</span>','سبعة بين ستة وثمانية'],['<span dir="ltr">0 &lt; 1 &lt; 2</span>','واحد بين صفر واثنين']]}
+  else if(d.ty==='ord'){t=[['<span dir="ltr">1 &lt; 4 &lt; 6 &lt; 9</span>','ترتيب تصاعدي'],['<span dir="ltr">9 &gt; 6 &gt; 4 &gt; 1</span>','ترتيب تنازلي']]}
+  else if(d.ty==='pos1'){t=[[mscene('in','🐱')+'<small>داخل</small>','داخل'],[mscene('out','🐱')+'<small>خارج</small>','خارج'],[mscene('above','🐱')+'<small>فوق / على</small>','فوق'],[mscene('below','🐱')+'<small>تحت</small>','تحت']]}
+  else if(d.ty==='pos2'){t=[[mrow(['🐱','🐶','🐰'])+'<small>🐶 بين 🐱 و 🐰</small>','الكلب بين القط والأرنب'],[mrow(['🐱','🐶','🐰'])+'<small>🐰 على يمين 🐶</small>','الأرنب على يمين الكلب'],[mrow(['🐱','🐶','🐰'])+'<small>🐱 على يسار 🐶</small>','القط على يسار الكلب'],[mrow(['🏁','🐱','🐶'])+'<small>🐱 أمام 🐶</small>','القط أمام الكلب']]}
+  else if(d.ty==='cell'){t=[[msvg('cell',{c:1,r:0,e:'🍎'})+'<small>🍎: العمود ب / الصف 1</small>','التفاحة في العمود ب الصف 1'],[msvg('cell',{c:3,r:2,e:'⭐'})+'<small>⭐: العمود د / الصف 3</small>','النجمة في العمود د الصف 3']]}
+  else if(d.ty==='node'){t=[[msvg('node',{c:2,r:1,e:'🍎'})+'<small>🍎 : ( 2 , 1 )</small>','التفاحة عند اثنين ثم واحد'],[msvg('node',{c:3,r:3,e:'⭐'})+'<small>⭐ : ( 3 , 3 )</small>','النجمة عند ثلاثة ثم ثلاثة']]}
+  return t;
+}
+function mLesson(l){
+  var d=ML[l],ex=mExamples(l),big=(d.ty==='cell'||d.ty==='node'||d.ty==='pos1'||d.ty==='pos2');
+  app.innerHTML=head({title:'الدرس '+l+': '+d.t,back:1})+
+   '<div class="two"><div class="panel"><h2 class="ptitle">أتعلم</h2>'+d.tx.map(function(x){return '<div class="rl">'+x+'</div>'}).join('')+
+   '<div class="row" style="margin-top:1rem"><button class="big-btn" data-go="mq-l'+l+'">اختبار الدرس</button></div></div>'+
+   '<div class="panel"><h2 class="ptitle">أمثلة</h2><div class="tiles mtiles '+(ex.length>=7?'t4':big||ex.length<5?'t2':'t3')+'">'+
+   ex.map(function(x,n){return '<button class="tile mtile c-'+MCOL[n%9]+'" data-say="'+x[1].replace(/"/g,'')+'" data-lang="ar-SA">'+x[0]+'</button>'}).join('')+
+   '</div><div class="note" style="text-align:center;margin-top:.6rem">'+voiceNote('ar-SA')+'</div></div></div>';
+  focusEl('.mtile');
+}
+function mRender(h){
+  var m;
+  if(h==='mt')return mHub();
+  if((m=h.match(/^mw-(\d)$/)))return mWeek(+m[1]);
+  if((m=h.match(/^ml-(\d+)$/)))return mLesson(+m[1]);
+  if((m=h.match(/^mq-(.+)$/))){
+    var k=m[1],ls,par=mParent(h);
+    if(k==='all'||k==='w6')ls=mnums(1,20);else if(k.charAt(0)==='w')ls=MWEEKS[+k.slice(1)-1].ls;else ls=[+k.slice(1)];
+    return startGen(mgen(ls),'ar',par,par);
+  }
+  go('home');
+}
+
+/* ---------- render ---------- */
+window.__fr={FT:FT,ALLW:ALLW,fgen:fgen,fPool:fPool,fValid:fValid};window.__gc={GL:GL,CS:CS,ggen:ggen,cgen:cgen};window.__m={mgen:mgen,ML:ML};
+function render(){
+  stopAuto();fStopAuto();clearTimeout(qTimer);Q=null;SEC=null;
+  try{speechSynthesis.cancel()}catch(e){}
+  var h=cur();LANG=(h.indexOf('fr')===0||isFrRoute(h))?'fr':'ar';
+  root.setAttribute('dir',LANG==='fr'?'ltr':'rtl');root.setAttribute('lang',LANG);
+  if(newRoute(h)){renderNew(h);window.scrollTo(0,0);return}
+  var p=h.split('-');
+  if(p.length===1)menu();
+  else if(p[1]==='quiz')quizSetup();
+  else learn(h);
+  window.scrollTo(0,0);
+}
+function back(){
+  if(Q){var ex=Q.exitTo;Q=null;clearTimeout(qTimer);if(ex)go(ex);else render();return}
+  var h=cur();if(h==='home')return;go(parentOf(h));
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest?e.target.closest('[data-go],[data-act],[data-say]'):null;if(!t)return;
+  if(t.hasAttribute('data-say')&&!t.hasAttribute('data-act')&&!t.hasAttribute('data-go')){say(t.getAttribute('data-say'),t.getAttribute('data-lang')||'ar-SA');return}
+  if(t.hasAttribute('data-go')){go(t.getAttribute('data-go'));return}
+  var a=t.getAttribute('data-act');
+  if(bookClick(a,t)||fClick(a,t))return;
+  if(a==='back')back();
+  else if(a==='snd'){SND.on=!SND.on;try{localStorage.setItem('huroofi-mute',SND.on?'0':'1')}catch(x){}if(!SND.on){try{speechSynthesis.cancel()}catch(x){}}t.innerHTML=SND.on?I_ON:I_OFF;var n=$('#note');if(n&&SEC)n.textContent=voiceNote(SEC.vlang)}
+  else if(a==='tile')select(+t.getAttribute('data-i'),true);
+  else if(a==='say'&&SEC&&SEC.items[sel])say(SEC.items[sel].say,SEC.vlang);
+  else if(a==='auto'){if(autoOn){stopAuto()}else{autoOn=true;t.textContent=T('إيقاف','Arrêter');runAuto(0)}}
+  else if(a==='qstart')startQuiz(LANG,t.getAttribute('data-sc'));
+  else if(a==='ans')answer(+t.getAttribute('data-i'));
+  else if(a==='qsay'&&Q){var q=Q.list[Q.i];say(q.say,Q.lang==='ar'?'ar-SA':'fr-FR')}
+  else if(a==='qagain'&&Q)startGen(Q.gen,Q.lang,Q.menu,Q.exitTo);
+});
+document.addEventListener('focusin',function(e){var t=e.target;if(SEC&&t&&t.classList&&t.classList.contains('tile')){var i=+t.getAttribute('data-i');if(i!==sel)select(i,false)}});
+window.addEventListener('hashchange',render);
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=function(){var n=document.getElementById('note');if(n&&SEC)n.textContent=voiceNote(SEC.vlang)};
+
+/* remote / keyboard spatial navigation */
+function vis(el){return el.offsetParent!==null||el===document.activeElement}
+function nav(d){
+  var list=[].slice.call(document.querySelectorAll('button')).filter(vis),c=document.activeElement;
+  if(!c||c===document.body||list.indexOf(c)<0){if(list[0])list[0].focus();return}
+  var r=c.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,best=null,bs=1e12;
+  list.forEach(function(el){
+    if(el===c)return;var b=el.getBoundingClientRect(),dx=b.left+b.width/2-cx,dy=b.top+b.height/2-cy,pri,cross;
+    if(d==='r'){pri=dx;cross=Math.abs(dy)}else if(d==='l'){pri=-dx;cross=Math.abs(dy)}else if(d==='d'){pri=dy;cross=Math.abs(dx)}else{pri=-dy;cross=Math.abs(dx)}
+    if(pri<=2)return;
+    var s=pri+cross*2.5;if(s<bs){bs=s;best=el}
+  });
+  if(best){best.focus();if(best.scrollIntoView)best.scrollIntoView({block:'nearest'})}
+}
+document.addEventListener('keydown',function(e){
+  var k=e.key,c=e.keyCode,d=null;
+  if(k==='ArrowLeft'||c===37)d='l';else if(k==='ArrowRight'||c===39)d='r';else if(k==='ArrowUp'||c===38)d='u';else if(k==='ArrowDown'||c===40)d='d';
+  if(d){e.preventDefault();nav(d);return}
+  if(c===23||k==='Select'){var a=document.activeElement;if(a&&a.click){e.preventDefault();a.click()}return}
+  if(k==='Escape'||k==='Backspace'||k==='GoBack'||k==='BrowserBack'||c===4||c===27||c===8){e.preventDefault();back()}
+});
+
+render();
+})();
+</script>
+
+</body></html>
